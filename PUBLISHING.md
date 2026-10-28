@@ -13,7 +13,8 @@
 | 市场图标 | ✅ `assets/icon-180.png`（180×180 位图；收录 YAML 已带 `icon:` 字段，规则拒绝 SVG 故由 icon.svg 转 PNG 底板） |
 | 详情页截图 | ✅ `screenshots.json`（3 张：启动器弹层 / 设置页 / 紧凑底部区，`assets/` 下）— 换图直接推本仓库即可，无需提 PR |
 | npm publish | ✅ 2026-10-28 `@qdnbd/dsh-panel-pins@0.7.3` 已发布（2FA 安全密钥走浏览器认证；registry 元数据验证：repository 回链 ✓ MIT ✓ engines.dsh ✓） |
-| 收录 PR | ⬜ 未提（YAML 已备好：`publishing/awesome-dsh-plugin--data-plugins-QDNBD__dsh-panel-pins.yml`） |
+| 收录 PR | ✅ 已提 https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/10186 （fork 提交 ceaf0f4，YAML 含 icon 字段；CI 绿后等人工审核，通常一天内生效） |
+| GitHub 元数据 | ✅ Description + Topics（dsh-plugin / dsh / deepseek-harness）已设置 |
 
 ## 剩余手工步骤（需要登录凭据，无法自动完成）
 
