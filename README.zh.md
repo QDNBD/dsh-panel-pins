@@ -56,10 +56,6 @@ dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
 - 底部入口**永不**收进菜单——原地保留，只对容器做限高滚动；
 - 插件不逐帧改写宿主样式表，全部通过类名 / CSS 变量门控，切换即时、无闪烁。
 
-## 致谢
-
-- [@weibaohui/dsh-sidebar-tidy](https://github.com/weibaohui/dsh-sidebar-tidy)（MIT）——紧凑底部区布局补丁（底部限高、二维码尺寸、品牌行/费用条收紧）与「按结构收纳插件入口」的思路移植自该项目，深表感谢；本仓库全部代码为独立编写。
-
 ## 许可
 
 [MIT](LICENSE) © 2026 QDNBD

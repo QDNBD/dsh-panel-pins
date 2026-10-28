@@ -56,10 +56,6 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 - Bottom footer entries are **never** folded into the menu — they stay in place; only their container gets a height cap with internal scrolling.
 - The plugin never rewrites host stylesheets per frame; everything is gated on classes / CSS custom properties, so toggling is instant and flicker-free.
 
-## Acknowledgements
-
-- [@weibaohui/dsh-sidebar-tidy](https://github.com/weibaohui/dsh-sidebar-tidy) (MIT) — the compact-footer layout patch (footer cap, QR sizing, brand/cost-meter tightening) and the structural "collect plugin entry rows" idea are ported/adapted from it with gratitude; all code in this repo is independently written.
-
 ## License
 
 [MIT](LICENSE) © 2026 QDNBD
