@@ -1,31 +1,57 @@
 {
-    "name":  "dsh-panel-pins",
-    "version":  "0.7.3",
-    "description":  "Sidebar panel management: a Panels launcher that collects global panel rows AND third-party plugin entry rows into one grouped menu (original-button click, per-group fold toggles, badge counts both), persisted pin/unpin menu items, a scrollable panel list, and a toggleable compact-footer layout patch at 15vh (ported from @weibaohui/dsh-sidebar-tidy; bottom entries stay in place, never folded into the menu).",
-    "type":  "module",
-    "exports":  {
-                    ".":  "./lib/index.js",
-                    "./client":  "./lib/client.js",
-                    "./locale/*.json":  "./locale/*.json",
-                    "./icon":  "./icon.svg"
-                },
-    "engines":  {
-                    "node":  "\u003e=20"
-                },
-    "dsh":  {
-                "bundle":  {
-                               "patch":  "./cordis.patch.yml"
-                           },
-                "client":  {
-                               "platform":  "web",
-                               "immediately":  true
-                           }
-            },
-    "keywords":  [
-                     "deepseek-harness",
-                     "dsh",
-                     "plugin",
-                     "sidebar"
-                 ],
-    "license":  "MIT"
+  "name": "@qdnbd/dsh-panel-pins",
+  "version": "0.7.3",
+  "type": "module",
+  "description": "Sidebar panel management for DeepSeek Harness: a Panels launcher that groups global panel rows and third-party plugin entry rows into one menu, persistent pin/unpin, a scrollable capped panel list, a toggleable compact footer, and a full Settings page (toggles, height sliders, keep-in-place whitelist, pin management).",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "sidebar",
+    "panels",
+    "launcher"
+  ],
+  "license": "MIT",
+  "author": "QDNBD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QDNBD/dsh-panel-pins.git"
+  },
+  "homepage": "https://github.com/QDNBD/dsh-panel-pins#readme",
+  "bugs": "https://github.com/QDNBD/dsh-panel-pins/issues",
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib/client.js",
+    "lib/index.js",
+    "locale/*.json",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    },
+    "compatibility": {
+      "dsh": ">=0.2.0-rc.1 <0.3.0-0"
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
 }

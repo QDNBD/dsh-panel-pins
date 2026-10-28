@@ -1,0 +1,11 @@
+# awesome-dsh-plugin 目录条目 — 提交方式见
+# https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/contributing.md
+# 把本文件内容粘贴为该仓库的 data/plugins/QDNBD__dsh-panel-pins.yml 并提 PR
+# （GitHub 网页：Add file → Create new file，文件名路径粘贴进去，会自动 fork）。
+# 每 PR 最多 3 条；description 含 ": " 必须加引号；不要手写 npm: 字段（自动采集）。
+url: https://github.com/QDNBD/dsh-panel-pins
+name: QDNBD/dsh-panel-pins
+category: ui
+description:
+  en: "Sidebar panel management for DeepSeek Harness: a grouped Panels launcher collects global panel rows and third-party plugin entry rows into one menu (clicks the original buttons), with persistent pin/unpin, a capped scrollable panel list, a toggleable compact footer, and a full Settings page — height sliders, a keep-in-place whitelist and bidirectional pin management."
+  zh: "DeepSeek Harness 侧栏面板收纳：把全局面板行与第三方插件入口收进一个分组「面板」菜单（点击原按钮），钉住状态持久化、面板列表限高滚动、底部插件区可紧凑限高，设置页提供高度滑块、白名单常驻与双向钉住管理。"

@@ -2,6 +2,7 @@
 
 # dsh-panel-pins
 
+[![npm](https://img.shields.io/npm/v/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-Windows-blue)
 
@@ -23,7 +24,13 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
 
 ## Install
 
-In DeepSeek Harness Desktop: **Settings → Plugins** and install `dsh-panel-pins` (or via a plugin market that lists it). Restart the app.
+In DeepSeek Harness Desktop: **Settings → Plugins** and install `@qdnbd/dsh-panel-pins` from a plugin market that lists it, or from a terminal:
+
+```sh
+dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
+```
+
+Restart the app.
 
 ## Usage
 
@@ -48,6 +55,10 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 
 - Bottom footer entries are **never** folded into the menu — they stay in place; only their container gets a height cap with internal scrolling.
 - The plugin never rewrites host stylesheets per frame; everything is gated on classes / CSS custom properties, so toggling is instant and flicker-free.
+
+## Acknowledgements
+
+- [@weibaohui/dsh-sidebar-tidy](https://github.com/weibaohui/dsh-sidebar-tidy) (MIT) — the compact-footer layout patch (footer cap, QR sizing, brand/cost-meter tightening) and the structural "collect plugin entry rows" idea are ported/adapted from it with gratitude; all code in this repo is independently written.
 
 ## License
 

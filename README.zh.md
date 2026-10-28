@@ -2,6 +2,7 @@
 
 # dsh-panel-pins
 
+[![npm](https://img.shields.io/npm/v/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-Windows-blue)
 
@@ -23,7 +24,13 @@
 
 ## 安装
 
-在 DeepSeek Harness 桌面端：**设置 → 插件**，安装 `dsh-panel-pins`（或在列出本包的插件市场安装）。重启应用。
+在 DeepSeek Harness 桌面端：**设置 → 插件**，从列出本插件的插件市场安装 `@qdnbd/dsh-panel-pins`，或终端执行：
+
+```sh
+dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
+```
+
+重启应用。
 
 ## 使用
 
@@ -48,6 +55,10 @@
 
 - 底部入口**永不**收进菜单——原地保留，只对容器做限高滚动；
 - 插件不逐帧改写宿主样式表，全部通过类名 / CSS 变量门控，切换即时、无闪烁。
+
+## 致谢
+
+- [@weibaohui/dsh-sidebar-tidy](https://github.com/weibaohui/dsh-sidebar-tidy)（MIT）——紧凑底部区布局补丁（底部限高、二维码尺寸、品牌行/费用条收紧）与「按结构收纳插件入口」的思路移植自该项目，深表感谢；本仓库全部代码为独立编写。
 
 ## 许可
 
