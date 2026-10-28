@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Panel Pins",
+    "description": "A Panels launcher that groups global panel rows and third-party plugin entry rows into one menu (clicks the original buttons, per-group fold toggles, badge counts both, whitelist words keep entries in the sidebar); pin/unpin rows in the More menu; a toggleable compact-footer patch with granular sub-toggles. The Settings column offers live toggles, height sliders, whitelist editing and pin management. Bottom entries stay in place. All state survives restarts."
+  }
+}

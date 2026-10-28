@@ -1,0 +1,8 @@
+# dsh-panel-pins bundle patch
+#
+# Host half is a no-op stub; the value lives entirely in the browser half
+# (./client), which the Web app loads because of dsh.client in package.json.
+- insert:
+    - id: panel-pins
+      name: 'dsh-panel-pins'
+      config: {}
