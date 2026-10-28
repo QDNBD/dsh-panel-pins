@@ -24,9 +24,11 @@
    cd D:\code\git\dsh-panel-pins
    # ② 登录官方源（注意 --registry 参数；打开的是 www.npmjs.com 授权页）
    npm login --registry https://registry.npmjs.org
-   # ③ 验证（应显示你的 npmjs 用户名）
-   npm whoami --registry https://registry.npmjs.org
-   # ④ 发布（package.json 已加 publishConfig 强制官方源）
+   # ③ 开启 2FA（TOTP 验证器 App；2025-10 实测：不开 2FA publish 必报
+   #    E403 "Two-factor authentication or granular access token with
+   #    bypass 2fa enabled is required"。恢复码务必备份）
+   #    https://www.npmjs.com/settings/<用户名>/tfa
+   # ④ 发布（会提示 Enter OTP，输验证器 6 位码；或 --otp=XXXXXX）
    npm publish --access public
    ```
 
