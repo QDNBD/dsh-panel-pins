@@ -17,6 +17,7 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
   - *Plugin entries* — third-party plugin entry rows are auto-detected (zero hard-coded selectors; derived structurally between the new-session anchor and the panel list) and can be opened via the menu; clicking fires the **original** button so each plugin's own open logic is untouched.
   - The launcher badge counts everything collected, so nothing is silently "lost".
 - **Pin / unpin that survives restarts** — adds pin/unpin rows to the sidebar's *More* menu; pinned panels sit in the sidebar, unpinned ones stay reachable via the menu.
+- **Top-pinning** — pin chosen panels to the very top of the panel list (works in the collapsed icon rail too). Implemented with negative CSS `order`, so no DOM surgery and no fights with host re-renders; top order follows the order you toggle them in Settings, the Panels launcher stays first and *More* stays last.
 - **Per-group fold toggles** — hide global panel rows and/or plugin entry rows independently; both persisted.
 - **Compact footer** (toggleable, on by default) — caps the footer plugin-action area (15vh, internal scroll), shrinks inline pairing QR codes, tightens the brand row and cost-meter. Sub-toggles for QR scaling / brand row / cost meter, plus height sliders.
 - **Settings page section** — *Settings → 面板收纳*: all toggles, four live height sliders (panel list / footer / popup / QR size), a **whitelist** to keep specific entries permanently in the sidebar (checkbox picker over real entries, exact match), and a **pin management** list showing every panel — pinned and unpinned — with one-click toggle.
@@ -50,6 +51,7 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 | `panel-list-max` / `foot-max` / `overlay-max` / `qr-max` | Height caps (vh/px) |
 | `whitelist` | Entry labels that stay in the sidebar, exact match |
 | `unpinned` / `label-ids` | Pin state and label→id memory for pin management |
+| `top` | Ordered list of top-pinned panel ids (array order = display order) |
 
 ## Notes
 
