@@ -1,8 +1,8 @@
 {
   "name": "@qdnbd/dsh-panel-pins",
-  "version": "0.7.6",
+  "version": "0.11.0",
   "type": "module",
-  "description": "Sidebar panel management for DeepSeek Harness: a Panels launcher that groups global panel rows and third-party plugin entry rows into one menu, persistent pin/unpin, top-pinning of chosen panels, a scrollable capped panel list, a toggleable compact footer, and a full Settings page (toggles, height sliders, keep-in-place whitelist, pin management).",
+  "description": "Sidebar panel management for DeepSeek Harness: a Panels launcher that groups global panel rows and third-party plugin entry rows into one searchable menu (Ctrl+K command palette, per-group collapsible memory), persistent pin/unpin with hover quick-actions, top-pinning of chosen panels, right-click context menu on sidebar rows, icon-only panel-row mode, a scrollable capped panel list, a toggleable compact footer with granular sub-toggles, and a full Settings page (toggles, height sliders, keep-in-sidebar whitelist, drag-to-reorder pin management, settings export/import).",
   "keywords": [
     "deepseek",
     "deepseek-harness",
@@ -10,7 +10,8 @@
     "dsh-plugin",
     "sidebar",
     "panels",
-    "launcher"
+    "launcher",
+    "command-palette"
   ],
   "license": "MIT",
   "author": "QDNBD",
