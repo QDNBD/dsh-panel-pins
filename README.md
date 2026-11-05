@@ -15,7 +15,8 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
 - **Panels launcher** — a first-class row in the sidebar (pixel-aligned with host rows) opens a grouped menu:
   - *Global panels* — the **full panel inventory** (pinned and unpinned alike), with the currently open one highlighted; unpinned panels open via a temporary-pin "peek" that restores your pin state afterwards.
   - *Plugin entries* — third-party plugin entry rows are auto-detected (zero hard-coded selectors; derived structurally between the new-session anchor and the panel list) and can be opened via the menu; clicking fires the **original** button so each plugin's own open logic is untouched.
-  - **In-menu search** with full keyboard navigation (type to filter, ↑↓ to move, Enter to open, Esc to close).
+  - **In-menu search** with full keyboard navigation (type to filter, ↑↓ to move, Enter to open, Esc to close) and **search-hit highlighting** — the matched substring lights up in the theme accent color.
+  - **Alt+1..9 direct activation** — while the menu or palette is open, jump straight to the Nth *visible* item (folded/filtered items are skipped).
   - **Collapsible groups with memory** — fold each group; the state survives menu re-opens and app restarts.
   - Hover any line for quick **pin / unpin / to-top** actions.
   - The launcher badge counts everything collected, so nothing is silently "lost".
