@@ -21,6 +21,7 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
   - Hover any line for quick **pin / unpin / to-top** actions.
   - The launcher badge counts everything collected, so nothing is silently "lost".
 - **Ctrl+K command palette** — the same inventory plus quick commands (collect rows, icon-only mode, compact footer, open Settings), centered and keyboard-first. Host text inputs are never hijacked.
+- **Recent group** — the menu and palette list your last-used panels (MRU, cap 5, persisted) at the top for one-click return; stays in sync with search, keyboard navigation and Alt+N jumps.
 - **Right-click context menu** on any sidebar row — open / pin / unpin / to-top / keep-in-sidebar, all keyboard-reachable (arrows, Home/End, Enter).
 - **Icon-only panel rows** — keep every panel row as a compact 18px glyph column; a gentler middle ground between full rows and full collection.
 - **Pin / unpin that survives restarts** — adds pin/unpin rows to the sidebar's *More* menu; pinned panels sit in the sidebar, unpinned ones stay reachable via the menu.
