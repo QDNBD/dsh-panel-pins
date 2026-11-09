@@ -10,6 +10,15 @@
 
 Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harness) — collect every panel row and third-party plugin entry into one grouped launcher menu, pin the ones you love, keep the sidebar compact, and tune it all from a dedicated Settings page.
 
+<p align="center">
+  <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="Panels launcher menu with search, groups and recent panels"></a>
+  <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K command palette"></a>
+</p>
+<p align="center">
+  <a href="assets/screenshot-context.png"><img src="assets/screenshot-context.png" width="49%" alt="Right-click context menu on a sidebar row"></a>
+  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="Settings page section"></a>
+</p>
+
 ## Features
 
 - **Panels launcher** — a first-class row in the sidebar (pixel-aligned with host rows) opens a grouped menu:

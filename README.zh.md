@@ -10,6 +10,15 @@
 
 [DeepSeek Harness](https://www.deepseek.com/zh/harness) 侧栏面板管理插件——把所有面板行和第三方插件入口收进一个分组启动菜单，常用面板钉在侧栏，底部区可收紧，全部参数可在设置页调整。
 
+<p align="center">
+  <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="面板启动菜单：搜索、分组与最近使用"></a>
+  <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K 命令面板"></a>
+</p>
+<p align="center">
+  <a href="assets/screenshot-context.png"><img src="assets/screenshot-context.png" width="49%" alt="侧栏行右键菜单"></a>
+  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="设置页面板收纳"></a>
+</p>
+
 ## 功能
 
 - **「面板」启动器**——侧栏一级行（与宿主行逐像素对齐），点开是分组菜单：
