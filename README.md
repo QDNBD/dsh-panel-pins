@@ -16,14 +16,18 @@ Everything it changes is display-layer only: reload the page and the host looks 
 
 <p align="center">
   <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="Panels launcher menu with search, groups and recent panels"></a>
+  <a href="assets/screenshot-launcher-dark.png"><img src="assets/screenshot-launcher-dark.png" width="49%" alt="Panels launcher menu — dark theme"></a>
+</p>
+<p align="center">
+  <a href="assets/screenshot-rename.png"><img src="assets/screenshot-rename.png" width="49%" alt="Floating rename editor — light theme"></a>
+  <a href="assets/screenshot-rename-dark.png"><img src="assets/screenshot-rename-dark.png" width="49%" alt="Floating rename editor — dark theme"></a>
+</p>
+<p align="center">
   <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K command palette"></a>
-</p>
-<p align="center">
   <a href="assets/screenshot-context.png"><img src="assets/screenshot-context.png" width="49%" alt="Right-click context menu on a sidebar row"></a>
-  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="Settings page section"></a>
 </p>
 <p align="center">
-  <a href="assets/screenshot-rename.png"><img src="assets/screenshot-rename.png" width="49%" alt="Floating rename editor anchored to a sidebar row"></a>
+  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="Settings page section"></a>
   <a href="assets/screenshot-footer.png"><img src="assets/screenshot-footer.png" width="49%" alt="Compact footer"></a>
 </p>
 

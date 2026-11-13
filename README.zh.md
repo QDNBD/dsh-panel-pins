@@ -16,14 +16,18 @@
 
 <p align="center">
   <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="面板启动菜单：搜索、分组与最近使用"></a>
+  <a href="assets/screenshot-launcher-dark.png"><img src="assets/screenshot-launcher-dark.png" width="49%" alt="面板启动菜单——深色主题"></a>
+</p>
+<p align="center">
+  <a href="assets/screenshot-rename.png"><img src="assets/screenshot-rename.png" width="49%" alt="重命名悬浮编辑器——浅色"></a>
+  <a href="assets/screenshot-rename-dark.png"><img src="assets/screenshot-rename-dark.png" width="49%" alt="重命名悬浮编辑器——深色"></a>
+</p>
+<p align="center">
   <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K 命令面板"></a>
-</p>
-<p align="center">
   <a href="assets/screenshot-context.png"><img src="assets/screenshot-context.png" width="49%" alt="侧栏行右键菜单"></a>
-  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="设置页面板收纳"></a>
 </p>
 <p align="center">
-  <a href="assets/screenshot-rename.png"><img src="assets/screenshot-rename.png" width="49%" alt="重命名悬浮编辑器"></a>
+  <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="设置页面板收纳"></a>
   <a href="assets/screenshot-footer.png"><img src="assets/screenshot-footer.png" width="49%" alt="紧凑底部区"></a>
 </p>
 
