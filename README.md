@@ -8,7 +8,9 @@
 
 **English** | [中文](README.zh.md)
 
-Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harness) — collect every panel row and third-party plugin entry into one grouped launcher menu, pin the ones you love, keep the sidebar compact, and tune it all from a dedicated Settings page.
+Your sidebar grows one row per installed plugin — the panel you need gets pushed out of view, and the session list gets squeezed. **dsh-panel-pins hands the sidebar back to you**: collect every panel row and third-party plugin entry into one searchable, grouped launcher menu, decide which rows stay in the sidebar, what they are called and in what order — pin the ones you love, jump anywhere from the keyboard, and tune it all from a dedicated Settings page.
+
+Everything it changes is display-layer only: reload the page and the host looks exactly as it did before you installed it.
 
 <p align="center">
   <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="Panels launcher menu with search, groups and recent panels"></a>
@@ -17,6 +19,10 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
 <p align="center">
   <a href="assets/screenshot-context.png"><img src="assets/screenshot-context.png" width="49%" alt="Right-click context menu on a sidebar row"></a>
   <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="Settings page section"></a>
+</p>
+<p align="center">
+  <a href="assets/screenshot-rename.png"><img src="assets/screenshot-rename.png" width="49%" alt="Floating rename editor anchored to a sidebar row"></a>
+  <a href="assets/screenshot-footer.png"><img src="assets/screenshot-footer.png" width="49%" alt="Compact footer"></a>
 </p>
 
 ## Features
@@ -32,7 +38,7 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
 - **Ctrl+K command palette** — the same inventory plus quick commands (collect rows, icon-only mode, compact footer, open Settings), centered and keyboard-first. Host text inputs are never hijacked.
 - **Layout presets** (v1.0.0) — capture your whole layout (pins, top pins, group folds, whitelist, icon-only, compact footer) as a named preset; apply it from the palette or Settings with one click, or delete it. Great for switching between "work" and "play" arrangements.
 - **Custom panel groups** (v1.0.0) — define your own groups (e.g. "daily"), assign panels to them from Settings (inline rename, member picker), and they render as first-class groups in the menu and palette — pulled out of the global list, with accurate per-group counts.
-- **Hide & rename sidebar rows** (v1.1.0) — right-click any row to hide it from the sidebar (restore it from Settings, or from the *Hidden rows* group in the menu) or rename it display-only (inline editor: Enter commits, Esc cancels; the original label keeps keying pins/groups/whitelist). Stores are id-first, so both survive UI language switches.
+- **Hide & rename sidebar rows** (v1.1.0) — right-click any row to hide it from the sidebar (restore it from Settings, or from the *Hidden rows* group in the menu) or rename it display-only (**floating editor**: pops up right below the row and tracks scrolling/folding live; survives the sidebar's constant re-renders with zero lost input; Enter commits, Esc cancels; the original label keeps keying pins/groups/whitelist). Stores are id-first, so both survive UI language switches.
 - **Recent group** — the menu and palette list your last-used panels (MRU, cap 5, persisted) at the top for one-click return; stays in sync with search, keyboard navigation and Alt+N jumps.
 - **Right-click context menu** on any sidebar row — open / pin / unpin / to-top / keep-in-sidebar / hide / rename, all keyboard-reachable (arrows, Home/End, Enter).
 - **Icon-only panel rows** — keep every panel row as a compact 18px glyph column; a gentler middle ground between full rows and full collection.
@@ -85,6 +91,21 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 
 - Bottom footer entries are **never** folded into the menu — they stay in place; only their container gets a height cap with internal scrolling.
 - The plugin never rewrites host stylesheets per frame; everything is gated on classes / CSS custom properties, so toggling is instant and flicker-free.
+
+## Boundaries & safety
+
+- **Display layer only.** Hiding and renaming change what *you* see in this one install — they never touch plugin loading, a plugin's registered name, or the plugin's own configuration. Rename is a pure visual override: the sidebar row, its tooltip and its accessible name follow your label; everything else (pins, groups, whitelist, palette) keeps keying off the original.
+- **No DOM surgery.** Ordering uses CSS `order`, hiding uses `display`, marking uses `data-dpp-*` attributes — no React nodes are moved and no host code is patched, so host re-renders never break the layout.
+- **Clean uninstall.** All state lives under the `dsh-panel-pins:` localStorage prefix; reload the page after removing the plugin and the host is back to stock, pixel for pixel.
+- **Theme-token styling.** Menus, floats and scrollbars consume host theme tokens (`--dsw-alias-*` / `--dsh-*`) with zero hard-coded colors — light, dark and third-party themes like `dsh-any-background` all work.
+
+## Troubleshooting
+
+- **Installed but no "Panels" row appears** — restart the app once; the sidebar module is generated at boot.
+- **Sidebar looks empty after enabling collection** — that is the point 🙂; click the **Panels** row (or press Ctrl+K) to reach everything. To keep a row permanently visible, right-click it → *Keep in sidebar*.
+- **A renamed row shows odd text or the editor misbehaves** — update to **v1.1.1+**, where the rename editor is a body-level floating overlay that survives the sidebar's constant re-renders.
+- **Toggles changed but nothing happens** — reload the page once; a stale bundle revision may be cached.
+- **Something looks broken after a host update** — check `engines.dsh` compatibility in this repo's `package.json`; the plugin declares a supported host range and is hidden by markets outside it.
 
 ## License
 
