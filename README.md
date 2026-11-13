@@ -12,6 +12,8 @@ Your sidebar grows one row per installed plugin — the panel you need gets push
 
 Everything it changes is display-layer only: reload the page and the host looks exactly as it did before you installed it.
 
+![demo — launcher menu, search highlighting, rename float](assets/demo.mp4)
+
 <p align="center">
   <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="Panels launcher menu with search, groups and recent panels"></a>
   <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K command palette"></a>

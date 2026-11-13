@@ -12,6 +12,8 @@
 
 它只改显示层：卸载插件刷新页面后，宿主外观与安装前一模一样。
 
+![演示——面板菜单、搜索高亮、重命名悬浮编辑器](assets/demo.mp4)
+
 <p align="center">
   <a href="assets/screenshot-launcher.png"><img src="assets/screenshot-launcher.png" width="49%" alt="面板启动菜单：搜索、分组与最近使用"></a>
   <a href="assets/screenshot-palette.png"><img src="assets/screenshot-palette.png" width="49%" alt="Ctrl+K 命令面板"></a>
