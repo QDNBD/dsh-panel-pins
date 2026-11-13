@@ -32,8 +32,9 @@ Sidebar panel management for [DeepSeek Harness](https://www.deepseek.com/zh/harn
 - **Ctrl+K command palette** — the same inventory plus quick commands (collect rows, icon-only mode, compact footer, open Settings), centered and keyboard-first. Host text inputs are never hijacked.
 - **Layout presets** (v1.0.0) — capture your whole layout (pins, top pins, group folds, whitelist, icon-only, compact footer) as a named preset; apply it from the palette or Settings with one click, or delete it. Great for switching between "work" and "play" arrangements.
 - **Custom panel groups** (v1.0.0) — define your own groups (e.g. "daily"), assign panels to them from Settings (inline rename, member picker), and they render as first-class groups in the menu and palette — pulled out of the global list, with accurate per-group counts.
+- **Hide & rename sidebar rows** (v1.1.0) — right-click any row to hide it from the sidebar (restore it from Settings, or from the *Hidden rows* group in the menu) or rename it display-only (inline editor: Enter commits, Esc cancels; the original label keeps keying pins/groups/whitelist). Stores are id-first, so both survive UI language switches.
 - **Recent group** — the menu and palette list your last-used panels (MRU, cap 5, persisted) at the top for one-click return; stays in sync with search, keyboard navigation and Alt+N jumps.
-- **Right-click context menu** on any sidebar row — open / pin / unpin / to-top / keep-in-sidebar, all keyboard-reachable (arrows, Home/End, Enter).
+- **Right-click context menu** on any sidebar row — open / pin / unpin / to-top / keep-in-sidebar / hide / rename, all keyboard-reachable (arrows, Home/End, Enter).
 - **Icon-only panel rows** — keep every panel row as a compact 18px glyph column; a gentler middle ground between full rows and full collection.
 - **Pin / unpin that survives restarts** — adds pin/unpin rows to the sidebar's *More* menu; pinned panels sit in the sidebar, unpinned ones stay reachable via the menu.
 - **Top-pinning with drag-to-reorder** — pin chosen panels to the very top (works in the collapsed icon rail too); reorder them by drag & drop in Settings. Implemented with negative CSS `order`, so no DOM surgery and no fights with host re-renders.
@@ -56,7 +57,7 @@ Restart the app.
 
 - Click the **Panels** row (with the count badge) in the sidebar → grouped, searchable menu of every panel and plugin entry (pinned and unpinned).
 - Press **Ctrl+K** anywhere → the centered command palette (quick commands + full inventory).
-- **Right-click** any sidebar row → open / pin / to-top / keep-in-sidebar.
+- **Right-click** any sidebar row → open / pin / to-top / keep-in-sidebar / hide / rename.
 - Open **Settings → 面板收纳** for the full control panel: toggles, sliders, whitelist, drag-to-reorder pin management, export/import, reset layout.
 
 ## Configuration
@@ -74,6 +75,11 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 | `whitelist` | Entries that stay in the sidebar (panel ids first, labels as legacy fallback) |
 | `unpinned` / `label-id-map` | Pin state and label→id memory for pin management |
 | `top` | Ordered list of top-pinned panel ids (array order = display order) |
+| `hidden-rows` | Rows hidden from the sidebar (v2 id-first entries `{id,label}`; legacy label arrays auto-migrated) |
+| `display-renames` | Display-name overrides (v2 id-first entries `{id,label,name}`; legacy label maps auto-migrated) |
+| `layout-presets` / `active-preset` | Named layout presets and the last applied one |
+| `custom-groups` | User-defined panel groups (id → {name, labels}) |
+| `recent-panels` | Recently opened panels (MRU, cap 5) |
 
 ## Notes
 
