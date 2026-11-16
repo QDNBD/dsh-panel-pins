@@ -8,10 +8,12 @@
 | --- | --- |
 | npm 主包 | **`dsh-panel-pins@1.2.0`** ✅（裸名，完整插件形态，latest；registry 验证 dsh.bundle/client/compatibility/engines 全在，无 deprecated） |
 | npm legacy alias | `@qdnbd/dsh-panel-pins@1.2.0` ✅（同步 1.2.0，latest，无 deprecated） |
+| **预写待发** | **v1.2.1（b71）已完整开发、测试、本机安装、双仓同步**（commit fd79507，2026-11-16）：拖放导入配置 + 隐藏行全部恢复 + 菜单快捷键提示行。**发布日只需两命令**：`publishing\bare` 与仓库根各跑 `npm publish --access public --registry https://registry.npmjs.org`（都在本人终端，各一次 OTP） |
 | 版本史（裸名） | 0.0.0-stage（npm 审核占位）→ 0.0.1/1.1.1（占位 stub）→ **1.2.0（真包）** |
 | v1.2.0 内容 | settings transfer 文件导出/导入（b70）+ 包名统一；jsdom 回归 57 项 53 过（4 挂为基线遗留） |
-| 本机安装 | ✅ tgz 管线装 1.2.0（SRC==INST、b70 验证） |
-| 收录描述 | `publishing/awesome-dsh-plugin--*.yml` 已更新（待提 PR） |
+| v1.2.1 内容 | 拖放导入（importSettingsFromText 三通道归一）+ Restore-all + 键盘提示行（b71）；jsdom 回归 64 项 60 过（4 挂同基线） |
+| 本机安装 | ✅ tgz 管线装 1.2.1（SRC==INST、b71 验证） |
+| 收录描述 | `publishing/awesome-dsh-plugin--*.yml` 已更新（PR #15895 待审） |
 
 ## 历史状态（2026-10-28，v0.7.3 首发）
 
