@@ -183,10 +183,10 @@ window.__ModuleLoader__.load({
 
     const STYLE_ID = 'dsh-panel-pins-style'
     const LAUNCHER_ATTR = 'data-dpp-launcher'
-    const BUILD = 'b70'
+    const BUILD = 'b71'
     // Keep in sync with package.json — shown on the Settings page so an
     // installed build can be identified at a glance (verify-install aid).
-    const VERSION = '1.2.0'
+    const VERSION = '1.2.1'
     const zh = (function () {
       try {
         return String((navigator && navigator.language) || '').toLowerCase().indexOf('zh') === 0
@@ -277,6 +277,8 @@ window.__ModuleLoader__.load({
       hiddenDetail: zh ? '从侧栏隐藏的入口在这里恢复显示' : 'Rows hidden from the sidebar; restore them here',
       hiddenEmpty: zh ? '没有隐藏任何行' : 'Nothing hidden',
       hiddenRestore: zh ? '恢复显示' : 'Restore',
+      hiddenRestoreAll: zh ? '全部恢复' : 'Restore all',
+      hiddenRestoreAllDone: zh ? '已恢复全部隐藏行' : 'All hidden rows restored',
       groupHidden: zh ? '已隐藏' : 'Hidden rows',
       renamesTitle: zh ? '重命名的行' : 'Renamed rows',
       renamesDetail: zh ? '显示名改动只影响本机显示；原名仍用于钉住/分组/白名单' : 'Display-only changes; the original label still keys pins/groups/whitelist',
@@ -1290,6 +1292,27 @@ window.__ModuleLoader__.load({
       )
     }
 
+    function importSettingsFromText(text, sourceLabel) {
+      // Shared validation + replay for every text-bearing import channel
+      // (clipboard / file / drag-drop). sourceLabel picks the rejection toast.
+      let dump = null
+      try {
+        dump = JSON.parse(String(text || ''))
+      } catch (error) {
+        dump = null
+      }
+      if (!dump || dump.__plugin !== 'dsh-panel-pins' || typeof dump !== 'object') {
+        showToast(sourceLabel === 'file' ? LABEL.setImportFileBad : LABEL.setImportBad)
+        return false
+      }
+      if (applyImportedDumpShared(dump)) {
+        showToast(sourceLabel === 'file' ? LABEL.setImportFileDone : LABEL.setImportDone)
+        return true
+      }
+      showToast(zh ? '导入失败' : 'Import failed')
+      return false
+    }
+
     function importSettingsFromFile() {
       // Pick a previously exported settings JSON file. A one-shot
       // <input type="file"> is appended to the body on demand; the change
@@ -1316,21 +1339,7 @@ window.__ModuleLoader__.load({
             } catch (error) {
               /* already detached */
             }
-            let dump = null
-            try {
-              dump = JSON.parse(String(reader.result || ''))
-            } catch (error) {
-              dump = null
-            }
-            if (!dump || dump.__plugin !== 'dsh-panel-pins' || typeof dump !== 'object') {
-              showToast(LABEL.setImportFileBad)
-              return
-            }
-            if (applyImportedDumpShared(dump)) {
-              showToast(LABEL.setImportFileDone)
-            } else {
-              showToast(zh ? '导入失败' : 'Import failed')
-            }
+            importSettingsFromText(String(reader.result || ''), 'file')
           }
           reader.onerror = function () {
             try {
@@ -1370,6 +1379,7 @@ window.__ModuleLoader__.load({
         buildDump: buildDump,
         exportSettingsFile: exportSettingsToFile,
         importSettingsFile: importSettingsFromFile,
+        importSettingsFromText: importSettingsFromText,
         applyImportedDump: applyImportedDumpShared,
       }
     } catch (error) {
@@ -3929,9 +3939,13 @@ window.__ModuleLoader__.load({
         box.appendChild(tidy)
 
         // Shortcut discoverability: one muted hint line at the very bottom.
+        // v1.2.1: documents the full keyboard surface (search/Enter/Esc/Alt+N),
+        // not just Ctrl+K — the exclusive features deserve findability.
         const hint = document.createElement('div')
         hint.className = 'dpp-ov-hint'
-        hint.textContent = zh ? 'Ctrl+K 快速命令 · Alt+数字直达' : 'Ctrl+K quick commands · Alt+N to jump'
+        hint.textContent = zh
+          ? '输入即搜 · Enter 打开 · Esc 关闭 · Alt+数字直达 · Ctrl+K 快速命令'
+          : 'Type to search · Enter opens · Esc closes · Alt+N jumps · Ctrl+K quick commands'
         box.appendChild(hint)
       }
 
@@ -5514,9 +5528,49 @@ window.__ModuleLoader__.load({
         )
       }
 
+      // v1.2.1: drag a settings JSON file onto the section to import it —
+      // same sentinel validation and replay chain as the file-picker channel.
+      // All handlers are defensive: drag UX must never throw into React.
+      const dropHandlers = {
+        onDragOver: function (event) {
+          try {
+            if (event && event.dataTransfer && Array.prototype.indexOf.call((event.dataTransfer.types || []), 'Files') !== -1) {
+              event.preventDefault()
+              event.dataTransfer.dropEffect = 'copy'
+            }
+          } catch (error) {
+            /* ignore */
+          }
+        },
+        onDrop: function (event) {
+          try {
+            const dt = event && event.dataTransfer
+            if (!dt) return
+            const file = dt.files && dt.files[0]
+            if (!file) return
+            event.preventDefault()
+            const reader = new FileReader()
+            reader.onload = function () {
+              const ok = importSettingsFromText(String(reader.result || ''), 'file')
+              if (ok) refreshSettingsState()
+            }
+            reader.onerror = function () {
+              showToast(zh ? '导入失败' : 'Import failed')
+            }
+            try {
+              reader.readAsText(file)
+            } catch (error) {
+              showToast(zh ? '导入失败' : 'Import failed')
+            }
+          } catch (error) {
+            /* ignore */
+          }
+        },
+      }
+
       return h(
         'div',
-        { className: 'dpp-set' },
+        Object.assign({ className: 'dpp-set' }, dropHandlers),
         h('h2', { className: 'dpp-set-title' }, LABEL.setTitle),
         h('p', { className: 'dpp-set-intro' }, LABEL.setIntro),
         h(
@@ -5843,6 +5897,33 @@ window.__ModuleLoader__.load({
               h('div', { className: 'dpp-set-detail' }, LABEL.hiddenDetail),
             ),
           ),
+          hiddenRows.length === 0
+            ? h('div', { className: 'dpp-set-empty' }, LABEL.hiddenEmpty)
+            : hiddenRows.length >= 2
+              ? h(
+                  'div',
+                  { className: 'dpp-set-row' },
+                  h('div', { className: 'dpp-set-texts' }),
+                  h(
+                    'button',
+                    {
+                      type: 'button',
+                      className: 'dpp-set-x',
+                      onClick: function () {
+                        try {
+                          writeHiddenRows([])
+                          setHiddenRows([])
+                          showToast(LABEL.hiddenRestoreAllDone)
+                          refreshAll()
+                        } catch (error) {
+                          /* React guard */
+                        }
+                      },
+                    },
+                    LABEL.hiddenRestoreAll,
+                  ),
+                )
+              : null,
           hiddenRows.length === 0
             ? h('div', { className: 'dpp-set-empty' }, LABEL.hiddenEmpty)
             : hiddenRows.map(function (label) {
