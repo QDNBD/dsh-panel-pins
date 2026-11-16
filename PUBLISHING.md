@@ -116,6 +116,11 @@ npm view dsh-panel-pins deprecated --registry https://registry.npmjs.org
 
 发布成功后：npm 搜索 "dsh-panel-pins" 命中占位包 → README 重定向 scoped 正包；`npm install dsh-panel-pins` 的用户看到 deprecate 提示。
 
+> **实际执行记录（2026-11-16 17:20）**：
+> 1. ✅ 首次发布撞上 npm **staged release 审核**：registry 文档先出现 npm 自己的占位版 `0.0.0-stage`（readme 写 "submitted for review"），约 3-5 分钟后 0.0.1 自动过审上线；**包名注册在 publish 那一刻就生效**（这是抢注的关键——别被审核中间态吓到重发）。npmjs.com 网页比 registry CDN 文档先刷新，验证以网页为准。
+> 2. ⚠️ `npm deprecate` 现在要求**浏览器 OTP**（2026-08 "bypass 2FA tokens restricted" 政策：敏感操作即使已登录也要再授权一次）。命令本身没问题——在终端重跑、按 Enter 开浏览器确认即可；npm error EOTP 里的 authId URL 在 agent 输出里是打码的，只能在本人终端执行。
+> 3. ✅ 最终状态：`dist-tags.latest = 0.0.1`，README/keywords/repository 回链全部正确。
+
 ### 待执行：收录描述更新 PR
 
 把 `publishing/awesome-dsh-plugin--data-plugins-QDNBD__dsh-panel-pins.yml` 中 `url:` 及之后的内容，粘贴到 awesome-dsh-plugin 仓库的 `data/plugins/QDNBD__dsh-panel-pins.yml`（fork → 网页编辑 → PR；更新已有条目走编辑而非新建文件）。
