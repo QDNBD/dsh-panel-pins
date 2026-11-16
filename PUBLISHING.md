@@ -8,7 +8,8 @@
 | --- | --- |
 | npm 主包 | **`dsh-panel-pins@1.2.0`** ✅（裸名，完整插件形态，latest；registry 验证 dsh.bundle/client/compatibility/engines 全在，无 deprecated） |
 | npm legacy alias | `@qdnbd/dsh-panel-pins@1.2.0` ✅（同步 1.2.0，latest，无 deprecated） |
-| **预写待发** | **v1.2.1（b71）已完整开发、测试、本机安装、双仓同步**（commit fd79507，2026-11-16）：拖放导入配置 + 隐藏行全部恢复 + 菜单快捷键提示行。**发布日只需两命令**：`publishing\bare` 与仓库根各跑 `npm publish --access public --registry https://registry.npmjs.org`（都在本人终端，各一次 OTP） |
+| **预写待发** | **v1.2.1（b71）已完整开发、测试、双仓同步**（commit fd79507，2026-11-16）：拖放导入配置 + 隐藏行全部恢复 + 菜单快捷键提示行。**发布日只需两命令**：`publishing\bare` 与仓库根各跑 `npm publish --access public --registry https://registry.npmjs.org`（都在本人终端，各一次 OTP） |
+| **下下次（预写在本机）** | **v1.2.2（b72）侧栏行拖拽排序**已完整开发、测试（66 项 60 过 / 4 基线遗留）、本机安装验证——**只在 dev 源 `D:\code\plugins\dsh-panel-pins`，未同步 git 仓**（避免污染 v1.2.1 发布队列）。功能：`row-order` 存储 + 负值 CSS order（-15000 段，置顶 -20000 优先）+ document 级拖拽委托（drop 插入线）+ 右键「移到最前」触屏兜底 + 清扫不早退（空数组也要清 marker）。**v1.2.1 发布后**：同步 lib/locale/icon 到本仓 + 两 package.json 升 1.2.2 + README 功能条目 + 回归 → 再走双发布 |
 | 版本史（裸名） | 0.0.0-stage（npm 审核占位）→ 0.0.1/1.1.1（占位 stub）→ **1.2.0（真包）** |
 | v1.2.0 内容 | settings transfer 文件导出/导入（b70）+ 包名统一；jsdom 回归 57 项 53 过（4 挂为基线遗留） |
 | v1.2.1 内容 | 拖放导入（importSettingsFromText 三通道归一）+ Restore-all + 键盘提示行（b71）；jsdom 回归 64 项 60 过（4 挂同基线） |
