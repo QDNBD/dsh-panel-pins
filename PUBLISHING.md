@@ -2,7 +2,18 @@
 
 > 记录公开发布的当前状态与后续发版步骤。发布流程与 `dsh-cli-bridge` 完全同构（见其 PUBLISHING.md 的流程调研）。
 
-## 当前状态（2026-10-28）
+## 当前状态（2026-11-16，v1.2.0 双发布完成）
+
+| 项 | 值 |
+| --- | --- |
+| npm 主包 | **`dsh-panel-pins@1.2.0`** ✅（裸名，完整插件形态，latest；registry 验证 dsh.bundle/client/compatibility/engines 全在，无 deprecated） |
+| npm legacy alias | `@qdnbd/dsh-panel-pins@1.2.0` ✅（同步 1.2.0，latest，无 deprecated） |
+| 版本史（裸名） | 0.0.0-stage（npm 审核占位）→ 0.0.1/1.1.1（占位 stub）→ **1.2.0（真包）** |
+| v1.2.0 内容 | settings transfer 文件导出/导入（b70）+ 包名统一；jsdom 回归 57 项 53 过（4 挂为基线遗留） |
+| 本机安装 | ✅ tgz 管线装 1.2.0（SRC==INST、b70 验证） |
+| 收录描述 | `publishing/awesome-dsh-plugin--*.yml` 已更新（待提 PR） |
+
+## 历史状态（2026-10-28，v0.7.3 首发）
 
 | 项 | 值 |
 | --- | --- |
