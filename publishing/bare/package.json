@@ -1,6 +1,6 @@
 {
   "name": "dsh-panel-pins",
-  "version": "0.0.1",
+  "version": "1.1.1",
   "description": "Renamed: install @qdnbd/dsh-panel-pins instead. This placeholder reserves the short npm name for the DeepSeek Harness sidebar panel launcher (Ctrl+K command palette, grouped searchable Panels menu, pin/hide/rename rows).",
   "keywords": [
     "deepseek",

@@ -128,6 +128,6 @@ npm view dsh-panel-pins deprecated --registry https://registry.npmjs.org
 ### 以后每次发版
 
 - **节奏目标：每周 2-3 个 patch**（下载曲线证明发布日下载 3-5 倍；小修小补都值得发版）。
-- stub 占位包**不需要**随正包递增版本；仅当想刷新其 recently-updated 时间时才重发（可选曝光手段，每月至多一次，避免占位包刷屏）。
+- **stub 占位包版本与正包镜像**（2026-11-16 定稿，用户选择「仅占位升级」形态）：stub 永远是重定向占位内容，但版本号与 `@qdnbd/dsh-panel-pins` 一致（首发 0.0.1 → 对齐为 1.1.1）。每次发正包后：`cd publishing\bare` → 手改 package.json version → `npm publish --access public --registry https://registry.npmjs.org` → `npm deprecate dsh-panel-pins@"*" "Renamed: install @qdnbd/dsh-panel-pins instead" --registry https://registry.npmjs.org`（deprecate 用 `"*"` 一条覆盖全部已存在版本；publish/deprecate 都会要求浏览器 OTP，在本人终端跑）。
 - v1.2.0 规划：侧栏行 HTML5 拖拽排序（触屏「移到最前」箭头，参考 COMPETITOR-ANALYSIS.md 附录 layout 实现要点）。
 - v1.3.0 规划：AI 自动分类（参考 control 实现要点：发面板名给宿主模型分 2-4 组、手动改动锁定语义）。
