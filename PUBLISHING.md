@@ -82,3 +82,47 @@ npm publish --access public           ← 官方源，带 OTP
 | npm 发布 / 收录 | `@qdnbd/dsh-panel-pins` | `@qdnbd/dsh-panel-pins` | registry |
 
 `dsh` 客户端按包名关联加载 client bundle，所以**每个安装形态内部两处名字必须一致**；两边不一致没关系（`dsh-cli-bridge` 本机 `@local/`、发布 `@qdnbd/` 同款先例）。若日后想迁移本机到 npm 包：先 remove 旧名再 add 新名，**两包并存会重复注册设置分区，务必二选一**。
+
+## 2026-11-16 分发优化（裸名抢注 + 文档/索引更新）
+
+背景与完整竞品对比见 [COMPETITOR-ANALYSIS.md](COMPETITOR-ANALYSIS.md)。裸名 `dsh-panel-pins` 在 npm 上仍是 404（未注册），用「stub 占位 + deprecate 指回 scoped 正包」双发布策略抢注搜索与安装命令流量。
+
+### 已完成（本次，无需再动）
+
+| 项 | 状态 |
+| --- | --- |
+| `publishing/bare/` stub 包 staging | ✅ package.json(0.0.1)+README，npm pack 通过（2 文件 1.6kB，无 dsh.bundle 清单——绝不双重注册） |
+| README 双语 | ✅ 下载量徽章 + 「为什么选它」对比表 + 老版本 (0.2.0-rc.2) 独占卖点 + 裸名占位说明 |
+| 收录 YAML | ✅ `publishing/awesome-dsh-plugin--data-plugins-QDNBD__dsh-panel-pins.yml` 描述重写（键盘效率定位 + Ctrl+K/Alt+1..9/command palette/MRU/layout presets 关键词） |
+| GitHub topics | ✅ 10 个（+launcher / command-palette / pin / rename） |
+| GitHub description | ✅ 已改为键盘效率型启动器定位 |
+
+### 待执行：npm 重新登录 + 裸名发布（token 已失效 E401）
+
+```powershell
+cd D:\code\git\dsh-panel-pins
+# ① 重新登录官方源（打开 www.npmjs.com 浏览器授权，2FA 走安全密钥/TOTP）
+npm login --registry https://registry.npmjs.org
+
+# ② 发布裸名 stub 并立即 deprecate 指回正包
+#    ⚠️ 每次 npm 命令都显式带 --registry（本机默认源是 npmmirror，不允许发布）
+cd publishing\bare
+npm publish --access public --registry https://registry.npmjs.org
+npm deprecate dsh-panel-pins@0.0.1 "Renamed: install @qdnbd/dsh-panel-pins instead" --registry https://registry.npmjs.org
+
+# ③ 验证（registry CDN 约 3 分钟延迟）
+npm view dsh-panel-pins deprecated --registry https://registry.npmjs.org
+```
+
+发布成功后：npm 搜索 "dsh-panel-pins" 命中占位包 → README 重定向 scoped 正包；`npm install dsh-panel-pins` 的用户看到 deprecate 提示。
+
+### 待执行：收录描述更新 PR
+
+把 `publishing/awesome-dsh-plugin--data-plugins-QDNBD__dsh-panel-pins.yml` 中 `url:` 及之后的内容，粘贴到 awesome-dsh-plugin 仓库的 `data/plugins/QDNBD__dsh-panel-pins.yml`（fork → 网页编辑 → PR；更新已有条目走编辑而非新建文件）。
+
+### 以后每次发版
+
+- **节奏目标：每周 2-3 个 patch**（下载曲线证明发布日下载 3-5 倍；小修小补都值得发版）。
+- stub 占位包**不需要**随正包递增版本；仅当想刷新其 recently-updated 时间时才重发（可选曝光手段，每月至多一次，避免占位包刷屏）。
+- v1.2.0 规划：侧栏行 HTML5 拖拽排序（触屏「移到最前」箭头，参考 COMPETITOR-ANALYSIS.md 附录 layout 实现要点）。
+- v1.3.0 规划：AI 自动分类（参考 control 实现要点：发面板名给宿主模型分 2-4 组、手动改动锁定语义）。

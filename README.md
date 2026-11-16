@@ -3,6 +3,7 @@
 # dsh-panel-pins
 
 [![npm](https://img.shields.io/npm/v/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
+[![downloads](https://img.shields.io/npm/dw/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-Windows-blue)
 
@@ -31,6 +32,23 @@ Everything it changes is display-layer only: reload the page and the host looks 
   <a href="assets/screenshot-footer.png"><img src="assets/screenshot-footer.png" width="49%" alt="Compact footer"></a>
 </p>
 
+## Why this one
+
+Among sidebar panel-management plugins for DeepSeek Harness, this is the only **keyboard-first launcher** — the five capabilities below are **exclusive to this plugin**:
+
+| Capability | This plugin | Other plugins (panel-control / panel-layout / panellist) |
+| --- | :-: | :-: |
+| **Ctrl+K command palette** | ✅ | ❌ |
+| **In-menu search + hit highlighting** | ✅ | ❌ |
+| **Alt+1..9 direct jumps** | ✅ | ❌ |
+| **Recent panels (MRU)** | ✅ | ❌ |
+| **Named layout presets, one-click apply** | ✅ | ❌ |
+| Widest host range: **DSH ≥ 0.2.0-rc.1** | ✅ | ❌ (panel-control / panel-layout need ≥ 0.2.1-rc.3) |
+| Drag-to-reorder sidebar rows directly | planned (v1.2) | ✅ |
+| AI auto-classification of panels | planned (v1.3) | ✅ (panel-control only) |
+
+> **On older hosts**: if your DSH is **0.2.0-rc.2** (anything before 0.2.1-rc.3), panel-control and panel-layout cannot be installed at all — this plugin and dsh-panellist are the only options, and this one is the more complete of the two.
+
 ## Features
 
 - **Panels launcher** — a first-class row in the sidebar (pixel-aligned with host rows) opens a grouped menu:
@@ -57,11 +75,13 @@ Everything it changes is display-layer only: reload the page and the host looks 
 
 ## Install
 
-In DeepSeek Harness Desktop: **Settings → Plugins** and install `@qdnbd/dsh-panel-pins` from a plugin market that lists it, or from a terminal:
+In DeepSeek Harness Desktop: **Settings → Plugins** and install this plugin from a plugin market that lists it, or from a terminal:
 
 ```sh
 dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
 ```
+
+> The short npm name `dsh-panel-pins` is a placeholder package — the real plugin is **`@qdnbd/dsh-panel-pins`**.
 
 Restart the app.
 

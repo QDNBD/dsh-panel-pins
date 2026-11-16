@@ -3,6 +3,7 @@
 # dsh-panel-pins
 
 [![npm](https://img.shields.io/npm/v/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
+[![downloads](https://img.shields.io/npm/dw/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-Windows-blue)
 
@@ -31,6 +32,23 @@
   <a href="assets/screenshot-footer.png"><img src="assets/screenshot-footer.png" width="49%" alt="紧凑底部区"></a>
 </p>
 
+## 为什么选它
+
+同类侧栏面板管理插件里，本插件是唯一的「键盘效率型启动器」——以下五项均为**独家能力**：
+
+| 能力 | 本插件 | 其它同类（panel-control / panel-layout / panellist） |
+| --- | :-: | :-: |
+| **Ctrl+K 命令面板** | ✅ | ❌ |
+| **菜单内搜索 + 命中高亮** | ✅ | ❌ |
+| **Alt+1..9 直达** | ✅ | ❌ |
+| **最近使用（MRU）** | ✅ | ❌ |
+| **具名布局预设一键切换** | ✅ | ❌ |
+| 兼容 **DSH ≥ 0.2.0-rc.1**（最宽） | ✅ | ❌（control / layout 要求 ≥ 0.2.1-rc.3） |
+| 侧栏行直接拖拽排序 | 规划中（v1.2） | ✅ |
+| AI 自动分类 | 规划中（v1.3） | ✅（仅 panel-control） |
+
+> **老版本用户注意**：如果你的 DSH 是 **0.2.0-rc.2**（0.2.1-rc.3 之前的所有版本），panel-control 与 panel-layout 均无法安装——本插件与 panellist 是仅有的两个选择，而本插件是其中功能最全的。
+
 ## 功能
 
 - **「面板」启动器**——侧栏一级行（与宿主行逐像素对齐），点开是分组菜单：
@@ -57,11 +75,14 @@
 
 ## 安装
 
-在 DeepSeek Harness 桌面端：**设置 → 插件**，从列出本插件的插件市场安装 `@qdnbd/dsh-panel-pins`，或终端执行：
+在 DeepSeek Harness 桌面端：**设置 → 插件**，从列出本插件的插件市场安装，或终端执行：
 
 ```sh
 dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
 ```
+
+> 国内用户：npmmirror 镜像会自动同步本包，无需额外配置。
+> npm 上的短名 `dsh-panel-pins` 是占位包，请认准 **`@qdnbd/dsh-panel-pins`**。
 
 重启应用。
 

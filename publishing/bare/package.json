@@ -1,0 +1,29 @@
+{
+  "name": "dsh-panel-pins",
+  "version": "0.0.1",
+  "description": "Renamed: install @qdnbd/dsh-panel-pins instead. This placeholder reserves the short npm name for the DeepSeek Harness sidebar panel launcher (Ctrl+K command palette, grouped searchable Panels menu, pin/hide/rename rows).",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "sidebar",
+    "panels",
+    "launcher",
+    "command-palette"
+  ],
+  "license": "MIT",
+  "author": "QDNBD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QDNBD/dsh-panel-pins.git"
+  },
+  "homepage": "https://github.com/QDNBD/dsh-panel-pins#readme",
+  "bugs": "https://github.com/QDNBD/dsh-panel-pins/issues",
+  "files": [
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
