@@ -74,14 +74,35 @@ npm publish --access public           ← 官方源，带 OTP
 5. ⚠️ **宿主升级时同步放宽兼容区间**：package.json 的 `engines.dsh` 与 `dsh.compatibility.dsh` 两处（当前 `>=0.2.0-rc.1 <0.3.0-0`）。宿主升 0.3.0 后若不改，市场会把本插件按"与当前 DSH 不兼容"隐藏。
 6. 更新 PUBLISHING.md 状态表
 
-## 双包名说明
+## 双包名说明（v1.2.0 起更新：裸名是主包）
+
+**2026-11-16 决策**：包名统一到裸名 `dsh-panel-pins`——它是**主安装名**（完整插件，README/市场/文档安装命令全指向它）；`@qdnbd/dsh-panel-pins` 降级为 **legacy alias**，继续同步发版照顾存量用户（**不 deprecate**：deprecated 包会被市场索引降权，alias 必须保持干净）。意外收益：本地开发形态（`D:\code\plugins\dsh-panel-pins`）本来就叫裸名，统一后「本地 = npm」同构，双包名心智负担消失。
 
 | 场景 | 包名 | cordis.patch name | 位置 |
 | --- | --- | --- | --- |
 | 本机 file: tgz 开发安装 | `dsh-panel-pins` | `dsh-panel-pins` | `~/.dsh/profiles/desktop/node_modules/dsh-panel-pins` |
-| npm 发布 / 收录 | `@qdnbd/dsh-panel-pins` | `@qdnbd/dsh-panel-pins` | registry |
+| **npm 主发布（v1.2.0 起）** | **`dsh-panel-pins`** | `dsh-panel-pins` | registry，staging 在 `publishing/bare/` |
+| npm legacy alias | `@qdnbd/dsh-panel-pins` | `@qdnbd/dsh-panel-pins` | registry，git 仓库根 |
 
-`dsh` 客户端按包名关联加载 client bundle，所以**每个安装形态内部两处名字必须一致**；两边不一致没关系（`dsh-cli-bridge` 本机 `@local/`、发布 `@qdnbd/` 同款先例）。若日后想迁移本机到 npm 包：先 remove 旧名再 add 新名，**两包并存会重复注册设置分区，务必二选一**。
+`dsh` 客户端按包名关联加载 client bundle，所以**每个安装形态内部两处名字必须一致**（patch name == package name）；同一 profile 里裸名与 scoped **不可并存**（会双重注册设置分区）——本机开发形态与 npm 裸名同构，天然安全。
+
+## 发版 Runbook（v1.2.0 起：裸名主包双发布）
+
+1. 开发源 `D:\code\plugins\dsh-panel-pins` 改代码 → `node --check lib/client.js` → 跑 `D:\code\.tmp-dpp-test\test.js` 回归（jsdom，v1.2.0 起 57 项断言含 settings transfer）
+2. 本机生效：跑 MAINTENANCE.md「本机安装管线」（tgz → 备份三件套 → robocopy 解包 → 补丁三处 → SRC==INST + BUILD 验证）
+3. 同步 git 仓：把 `lib/`、`locale/`、`icon.svg` 拷到 `D:\code\git\dsh-panel-pins`（**不要**拷 package.json 和 cordis.patch.yml——两边的包身份不同），确认仓库 package.json 的 `version` 同步递增 → commit + push
+4. **双发布**（都要求 npm 官方源 + 浏览器 OTP，在本人终端执行）：
+   ```powershell
+   # ① 裸名主包（publishing/bare/，先同步 lib/locale/icon/README 进去）
+   cd D:\code\git\dsh-panel-pins\publishing\bare
+   npm publish --access public --registry https://registry.npmjs.org
+   # ② scoped legacy alias（git 仓库根）
+   cd D:\code\git\dsh-panel-pins
+   npm publish --access public --registry https://registry.npmjs.org
+   ```
+   ⚠️ **不要 deprecate** 任何一侧：裸名现在是正包，scoped 是活 alias。
+5. ⚠️ **宿主升级时同步放宽兼容区间**：`publishing/bare/package.json` 与 git 仓库 `package.json` 两处的 `engines.dsh` + `dsh.compatibility.dsh`（当前 `>=0.2.0-rc.1 <0.3.0-0`）。
+6. 更新 PUBLISHING.md 状态表 + awesome-dsh-plugin 收录描述 PR（如描述有变）。
 
 ## 2026-11-16 分发优化（裸名抢注 + 文档/索引更新）
 
@@ -128,6 +149,7 @@ npm view dsh-panel-pins deprecated --registry https://registry.npmjs.org
 ### 以后每次发版
 
 - **节奏目标：每周 2-3 个 patch**（下载曲线证明发布日下载 3-5 倍；小修小补都值得发版）。
-- **stub 占位包版本与正包镜像**（2026-11-16 定稿，用户选择「仅占位升级」形态）：stub 永远是重定向占位内容，但版本号与 `@qdnbd/dsh-panel-pins` 一致（首发 0.0.1 → 对齐为 1.1.1）。每次发正包后：`cd publishing\bare` → 手改 package.json version → `npm publish --access public --registry https://registry.npmjs.org` → `npm deprecate dsh-panel-pins@"*" "Renamed: install @qdnbd/dsh-panel-pins instead" --registry https://registry.npmjs.org`（deprecate 用 `"*"` 一条覆盖全部已存在版本；publish/deprecate 都会要求浏览器 OTP，在本人终端跑）。
-- v1.2.0 规划：侧栏行 HTML5 拖拽排序（触屏「移到最前」箭头，参考 COMPETITOR-ANALYSIS.md 附录 layout 实现要点）。
+- ~~stub 占位包版本与正包镜像~~（**已被 v1.2.0 决策取代**：裸名不再是占位 stub，而是主包完整形态；见「双包名说明」与「发版 Runbook」——裸名与 scoped 双发布，均不 deprecate）。
+- v1.2.0（b70）已交付：settings transfer 文件导出/导入（jsdom 回归 57 项断言）+ 包名统一。
 - v1.3.0 规划：AI 自动分类（参考 control 实现要点：发面板名给宿主模型分 2-4 组、手动改动锁定语义）。
+- v1.2.x 排期观察：侧栏行 HTML5 拖拽排序（触屏「移到最前」箭头，参考 COMPETITOR-ANALYSIS.md 附录 layout 实现要点）。

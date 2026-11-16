@@ -70,18 +70,21 @@ Among sidebar panel-management plugins for DeepSeek Harness, this is the only **
 - **Top-pinning with drag-to-reorder** — pin chosen panels to the very top (works in the collapsed icon rail too); reorder them by drag & drop in Settings. Implemented with negative CSS `order`, so no DOM surgery and no fights with host re-renders.
 - **Per-group fold toggles** — hide global panel rows and/or plugin entry rows independently; both persisted.
 - **Compact footer** (toggleable, on by default) — caps the footer plugin-action area (15vh, internal scroll), shrinks inline pairing QR codes, tightens the brand row and cost-meter. Sub-toggles for QR scaling / brand row / cost meter, plus height sliders.
-- **Settings page section** — *Settings → 面板收纳*: all toggles, four live height sliders (panel list / footer / popup / QR size), a **whitelist** to keep specific entries permanently in the sidebar (id-first storage, so it survives UI language switches), a **pin management** list with drag-to-reorder, and **settings export/import** (clipboard JSON) to move your setup between machines.
+- **Settings page section** — *Settings → 面板收纳*: all toggles, four live height sliders (panel list / footer / popup / QR size), a **whitelist** to keep specific entries permanently in the sidebar (id-first storage, so it survives UI language switches), a **pin management** list with drag-to-reorder, and **settings export/import** (clipboard JSON + settings file), plus one-click layout reset.
+- **Settings file export/import (v1.2.0)** — next to the clipboard, a real **file channel**: download `dsh-panel-pins-settings.json` from Settings and restore it on another machine with one click. Both channels share one dump builder and one replay chain, guarded by a `__plugin` sentinel — foreign JSON is always rejected.
 - **Theme-friendly** — menu surface and scrollbars consume host theme tokens (`--dsw-menu-surface-fill`, backdrop filter, scrollbar tokens), so it plays nicely with themes and plugins like `dsh-any-background`. No hard-coded white/gray.
 
 ## Install
 
-In DeepSeek Harness Desktop: **Settings → Plugins** and install this plugin from a plugin market that lists it, or from a terminal:
+**Primary name since v1.2.0:**
 
 ```sh
-dsh plugin --profile <your-profile> add @qdnbd/dsh-panel-pins
+dsh plugin --profile <your-profile> add dsh-panel-pins
 ```
 
-> The short npm name `dsh-panel-pins` is a placeholder package — the real plugin is **`@qdnbd/dsh-panel-pins`**.
+Or in DeepSeek Harness Desktop: **Settings → Plugins** and install from a plugin market.
+
+> Existing users: the pre-1.2.0 release name `@qdnbd/dsh-panel-pins` keeps working as a **legacy alias** (still updated in sync) — no migration needed; new installs should use the bare name above.
 
 Restart the app.
 
@@ -112,6 +115,7 @@ All state lives in `localStorage` under the `dsh-panel-pins:` prefix and survive
 | `layout-presets` / `active-preset` | Named layout presets and the last applied one |
 | `custom-groups` | User-defined panel groups (id → {name, labels}) |
 | `recent-panels` | Recently opened panels (MRU, cap 5) |
+| `dsh-panel-pins-settings.json` (file) | v1.2.0: file snapshot of all of the above (export/import) |
 
 ## Notes
 
