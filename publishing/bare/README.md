@@ -85,7 +85,7 @@ dsh plugin --profile <your-profile> add dsh-panel-pins
 
 Or in DeepSeek Harness Desktop: **Settings → Plugins** and install from a plugin market.
 
-> Existing users: the pre-1.2.0 release name `@qdnbd/dsh-panel-pins` keeps working as a **legacy alias** (still updated in sync) — no migration needed; new installs should use the bare name above.
+> **FINAL scoped release.** This `@qdnbd` package is frozen at v1.2.1 and will not receive further updates. Install **`dsh-panel-pins`** (the bare name) for all future versions — reinstall it from your plugin market to migrate; your settings carry over via Settings → 面板收纳 → export/import.
 
 Restart the app.
 

@@ -85,7 +85,7 @@ dsh plugin --profile <your-profile> add dsh-panel-pins
 
 在 DeepSeek Harness 桌面端也可：**设置 → 插件**，从插件市场安装。
 
-> 存量用户：v1.2.0 之前的发布名 `@qdnbd/dsh-panel-pins` 现作为**兼容别名**继续同步更新，无需迁移；新装请用上面的裸名。
+> **最终别名版**：`@qdnbd` 这个包冻结在 v1.2.1，之后不再更新。后续版本只发 **`dsh-panel-pins`**（裸名）——请在插件市场重装裸名包完成迁移；设置 → 面板收纳 → 导出/导入 可带走全部配置。
 > 国内用户：npmmirror 镜像会自动同步本包，无需额外配置。
 
 重启应用。
