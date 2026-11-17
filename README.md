@@ -44,7 +44,7 @@ Among sidebar panel-management plugins for DeepSeek Harness, this is the only **
 | **Recent panels (MRU)** | ✅ | ❌ |
 | **Named layout presets, one-click apply** | ✅ | ❌ |
 | Widest host range: **DSH ≥ 0.2.0-rc.1** | ✅ | ❌ (panel-control / panel-layout need ≥ 0.2.1-rc.3) |
-| Drag-to-reorder sidebar rows directly | planned (v1.2) | ✅ |
+| Drag-to-reorder sidebar rows + right-click "Move to front" | ✅ (v1.2.2) | ✅ |
 | AI auto-classification of panels | planned (v1.3) | ✅ (panel-control only) |
 
 > **On older hosts**: if your DSH is **0.2.0-rc.2** (anything before 0.2.1-rc.3), panel-control and panel-layout cannot be installed at all — this plugin and dsh-panellist are the only options, and this one is the more complete of the two.
@@ -85,7 +85,7 @@ dsh plugin --profile <your-profile> add dsh-panel-pins
 
 Or in DeepSeek Harness Desktop: **Settings → Plugins** and install from a plugin market.
 
-> **FINAL scoped release.** This `@qdnbd` package is frozen at v1.2.1 and will not receive further updates. Install **`dsh-panel-pins`** (the bare name) for all future versions — reinstall it from your plugin market to migrate; your settings carry over via Settings → 面板收纳 → export/import.
+> **Single-name era (since v1.2.2)**: npm ships only the bare **`dsh-panel-pins`**. The old `@qdnbd/dsh-panel-pins` is frozen at 1.2.1 (older installs show a migration notice on install) — reinstall the bare package from your plugin market to migrate; Settings → 面板收纳 → export/import carries your configuration over.
 
 Restart the app.
 

@@ -2,6 +2,16 @@
 
 > 记录公开发布的当前状态与后续发版步骤。发布流程与 `dsh-cli-bridge` 完全同构（见其 PUBLISHING.md 的流程调研）。
 
+## 单发布收敛（2026-11-17 定稿）
+
+v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；从 1.2.2 起**只发裸名 `dsh-panel-pins`**，每次发版 = 1 条 publish + 1 次 OTP。
+
+| 时间线 | 事件 |
+| --- | --- |
+| 2026-11-16 | v1.2.0 双发布（裸名 1.2.0 上线 + scoped alias 同步） |
+| 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
+| 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
+
 ## 当前状态（2026-11-16，v1.2.0 双发布完成）
 
 | 项 | 值 |
