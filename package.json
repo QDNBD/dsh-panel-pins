@@ -1,6 +1,6 @@
 {
   "name": "dsh-panel-pins",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "type": "module",
   "description": "Keyboard-first sidebar panel launcher for DeepSeek Harness: grouped searchable Panels menu with hit highlighting, Alt+1..9 direct jumps, MRU, mirrored by a Ctrl+K command palette with named layout presets. Pin/top/hide/rename rows (drag-to-reorder with a drop indicator, Move-to-front fallback), custom groups, icon-only mode, compact footer, full Settings page, and settings export/import via clipboard, file AND drag-drop. Display-layer only: no DOM surgery, clean uninstall, theme-token styling. THE primary install name; the @qdnbd scoped package is frozen at 1.2.1 (final alias).",
   "keywords": [
