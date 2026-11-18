@@ -2,8 +2,8 @@
 
 # dsh-panel-pins
 
-[![npm](https://img.shields.io/npm/v/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
-[![downloads](https://img.shields.io/npm/dw/@qdnbd/dsh-panel-pins)](https://www.npmjs.com/package/@qdnbd/dsh-panel-pins)
+[![npm](https://img.shields.io/npm/v/dsh-panel-pins)](https://www.npmjs.com/package/dsh-panel-pins)
+[![downloads](https://img.shields.io/npm/dw/dsh-panel-pins)](https://www.npmjs.com/package/dsh-panel-pins)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-Windows-blue)
 
@@ -71,6 +71,8 @@ Among sidebar panel-management plugins for DeepSeek Harness, this is the only **
 - **Per-group fold toggles** — hide global panel rows and/or plugin entry rows independently; both persisted.
 - **Compact footer** (toggleable, on by default) — caps the footer plugin-action area (15vh, internal scroll), shrinks inline pairing QR codes, tightens the brand row and cost-meter. Sub-toggles for QR scaling / brand row / cost meter, plus height sliders.
 - **Settings page section** — *Settings → 面板收纳*: all toggles, four live height sliders (panel list / footer / popup / QR size), a **whitelist** to keep specific entries permanently in the sidebar (id-first storage, so it survives UI language switches), a **pin management** list with drag-to-reorder, and **settings export/import** (clipboard JSON + settings file), plus one-click layout reset.
+- **Drag-to-reorder sidebar rows, WYSIWYG** (v1.2.2) — grab any panel/plugin row in the sidebar itself and drop it where you want; a blue insert line marks the drop point live. The Settings pin manager is draggable too, and a right-click "Move to front" covers touch/keyboard. Reorder stores a `row-order` array driving negative CSS `order` values — no DOM surgery, immune to host re-renders, survives restarts; draggability is proactively marked (b73 fix) so the gesture never gets lost.
+- **Deep DSH 0.2.2-rc.3 integration** (v1.2.3–v1.3.1) — when rc.3 rebuilt the sidebar DOM (DIV row units, nested row buttons, grid layout), this plugin tracked it same-day: independent panel-list scrolling (panel list and session region scroll separately instead of dragging the whole sidebar), launcher rows **pixel-aligned** with host rows (32px rows, 5px/9px padding, 6px icon gap), manual wheel drive for the height-capped list, and opt-in collection of footer plugin entries into the Panels menu.
 - **Settings file export/import (v1.2.0)** — next to the clipboard, a real **file channel**: download `dsh-panel-pins-settings.json` from Settings and restore it on another machine with one click. Both channels share one dump builder and one replay chain, guarded by a `__plugin` sentinel — foreign JSON is always rejected.
 - **Drag-drop import (v1.2.1)** — drop a settings JSON onto the Settings section to import it (same validation chain as the file picker); plus a **Restore-all** button for hidden rows (when 2+) and a full **keyboard hint line** in the launcher menu (type to search · Enter opens · Esc closes · Alt+N jumps · Ctrl+K).
 - **Theme-friendly** — menu surface and scrollbars consume host theme tokens (`--dsw-menu-surface-fill`, backdrop filter, scrollbar tokens), so it plays nicely with themes and plugins like `dsh-any-background`. No hard-coded white/gray.
