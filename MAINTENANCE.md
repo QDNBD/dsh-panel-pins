@@ -51,7 +51,7 @@
 
 ## v1.3.3（b85）反馈机制
 
-- 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、宿主问卷（`globalThis.__DSH_CONTACT_CONFIG__` 契约：`contactFormUrl`+`contactSource` → `prefill_source`/`prefill_device_info` + `hide_*` 声明，panel-layout 同款；缺失/畸形回退 `FEEDBACK_DEFAULT_SURVEY_URL` 飞书表单）、诊断复制（`buildDump()` + 环境块上剪贴板）。
+- 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、作者自有问卷（`FEEDBACK_SURVEY_URL` = 作者自己的飞书表单 rcnenqajjbvx.feishu.cn——**绝不指向宿主问卷** `trtgsjkv6r.feishu.cn`，那是 DSH 官方的表单，插件作者收不到提交）、诊断复制（`buildDump()` + 环境块上剪贴板）。宿主 `__DSH_CONTACT_CONFIG__.contactSource` 只作 `prefill_source` 的来源标注，永不改变目的地。
 - **隐私红线**：`feedbackEnvBody()` 只含插件版本/构建、宿主版本、UA、语言四项，绝不包含 localStorage 值与面板名——dump 含面板名/重命名，复制必须显式点击（「复制诊断信息」），永不自动附到 URL。
 - `window.open` 必须在 click 处理器内同步调用（异步打开被 webview 弹窗拦截拦掉）；三个 UI 入口（设置卡/palette 命令/诊断按钮）都守此约。
 - 回归：`D:\code\.tmp-dpp-test\test-b85-feedback.js`（27 断言：URL 构造、契约读取、回退、剪贴板失败 toast、隐私不泄漏）；测试钩子 `window.__dppFeedback`。
