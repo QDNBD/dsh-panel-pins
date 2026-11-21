@@ -130,6 +130,35 @@ try {
         Write-Host "[5a] profile package.json specifier -> v$version (backup: .bak-dpp)"
     }
 
+    # 5a2. registry-form dependency detection (2026-11-21 incident).
+    # Since the single-name npm era the profile may carry the plugin as a
+    # REGISTRY dependency ("dsh-panel-pins": "^1.3.1"). Every local install
+    # then silences 5a/5b/5c (they only match the local- tgz form) and the
+    # desktop startup's pnpm re-lay rolls the install tree back to the
+    # published version — the local build silently vanishes on restart.
+    # Fix: convert the specifier to the file:tgz form AND rebuild the lock
+    # so pnpm records the tgz (version + integrity) instead of the registry.
+    $pnpmCjs = $null
+    try {
+        $depsDir = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Node))  # ...\dependencies\node\bin\node.exe -> ...\dependencies
+        $candidate = Join-Path $depsDir 'pnpm\bin\pnpm.cjs'
+        if (Test-Path $candidate) { $pnpmCjs = $candidate }
+    } catch { $pnpmCjs = $null }
+    $specPattern = '"' + [regex]::Escape($PluginName) + '"\s*:\s*"\^'
+    if ((Select-String -Path $pf -Pattern $specPattern -Quiet) -and $pnpmCjs) {
+        Write-Host "[5a2] registry-form dependency detected -> converting to file:tgz" -ForegroundColor Yellow
+        Copy-Item $pf "$pf.bak-dpp-reg" -Force
+        $ptxt = [IO.File]::ReadAllText($pf)
+        $tgzFwd = $Tgz -replace '\\', '/'
+        $ptxt = [regex]::Replace($ptxt, ('"' + [regex]::Escape($PluginName) + '"\s*:\s*"\^[^"]*"'), ('"' + $PluginName + '": "file:' + $tgzFwd + '"'))
+        [IO.File]::WriteAllText($pf, $ptxt, (New-Object System.Text.UTF8Encoding($false)))
+        & $Node $pnpmCjs install --dir $Profile 2>&1 | ForEach-Object { Write-Host "      pnpm: $_" }
+        if ($LASTEXITCODE -ne 0) { throw "pnpm install failed to rebuild the lockfile (exit=$LASTEXITCODE)" }
+        Write-Host "[5a2] lockfile rebuilt against $tgzFwd (backup: .bak-dpp-reg)"
+    } elseif (Select-String -Path $pf -Pattern $specPattern -Quiet) {
+        Write-Host "[5a2] registry-form dependency found but pnpm.cjs not located — MANUAL FIX REQUIRED: set the dependency to 'file:$Tgz' and run pnpm install, or the startup re-lay will roll this install back" -ForegroundColor Red
+    }
+
     # 5b. pnpm-lock.yaml: version strings + integrity, BLOCK-SCOPED.
     $lock = Join-Path $Profile 'pnpm-lock.yaml'
     $openMarker = '  ' + $PluginName + '@file:'
