@@ -47,3 +47,12 @@
 - 新版 Chromium 设置 `scrollbar-width` 标准属性会**禁用** `::-webkit-scrollbar` 伪元素样式——统一走 webkit 伪元素，别混。
 - 与 `dsh-any-background` 共存：弹层表面/滚动条必须消费宿主 token（`--dsw-menu-surface-fill`、`--dsh-scrollbar-thumb`），磨砂回退给 `blur(24px) saturate(150%)` 而非 `none`（否则删掉宿主 40px 磨砂）。
 - 与独立版 `dsh-sidebar-tidy`（本地 CSS 补丁版 / GitHub 版）规则重叠：确认 panel-pins 稳定后建议用户卸载它们，避免叠加。
+
+## 宿主契约（v1.3.2 b84 实测，桌面端 0.2.2-rc.5）
+
+从安装目录 asar 提取 `@deepseek-ai/dsh-client-ui-layout` 的 client.js 逐字核实（提取法：读 asar 头 JSON 拿文件 offset/size，`8 + headerSize + offset` 处读 bytes）：
+
+- **layout 服务**：`ctx.reflect.provide('layout', ...)`，可选读取必须走 `optionalService` 容错访问器（`ctx.get` 对未声明服务部分 cordis 版本抛错）；**绝不**把 layout 加进 `inject` —— 声明缺失服务会 park 整个 fiber，插件永不加载（panellist 文档化的教训）。
+- **panelInfo 形状**：`{ getSnapshot: () => store.getSnapshot().panelInfo, subscribe: listener => store.subscribe(listener) }`；快照形如 `{ activePanelId: string|null }`。`activePanelId()` 与订阅驱动刷新（切面板不产生 sidebar DOM mutation，observer 看不见）都建立在这上面。
+- **selectPanel 语义**：`layout.selectPanel(panelId)` 对未注册的 main key **抛错**（`main panel "..." is not registered`）——桥接/跳转调用必须 try/catch；store 层 `retainMainPanels` 会在面板清单变化时自动清掉失效的 activePanelId（置 null，回对话），是宿主级的失效兜底。
+- **profile 安装形态警报**：1.2.2 起 npm 单名发布，desktop profile 的依赖形态从 `file:tgz` 漂成 registry `^x.y.z`——pack.ps1 的 5a/5b/5c 只匹配 local- tgz 形态，全部静默空转，**桌面端启动重铺会把本地安装回滚到 npm 已发布版**。pack.ps1 已加 5a2（检测 `^` 形态 → 自动转 file:tgz + pnpm lock 重建，pnpm.cjs 从运行时 `dependencies\pnpm\bin\pnpm.cjs` 相对定位）。
