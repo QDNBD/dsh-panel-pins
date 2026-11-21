@@ -47,6 +47,14 @@
 - 新版 Chromium 设置 `scrollbar-width` 标准属性会**禁用** `::-webkit-scrollbar` 伪元素样式——统一走 webkit 伪元素，别混。
 - 与 `dsh-any-background` 共存：弹层表面/滚动条必须消费宿主 token（`--dsw-menu-surface-fill`、`--dsh-scrollbar-thumb`），磨砂回退给 `blur(24px) saturate(150%)` 而非 `none`（否则删掉宿主 40px 磨砂）。
 - 与独立版 `dsh-sidebar-tidy`（本地 CSS 补丁版 / GitHub 版）规则重叠：确认 panel-pins 稳定后建议用户卸载它们，避免叠加。
+- `test-git-b83.js` 在 b84 起固定 4 失败（whitelist 移除→收纳→菜单清点链路：entriesOfSlot 桩形态过时），与 b84/b85 改动无关——stash 对照实测 HEAD 与工作树失败集完全一致。以 `test-b84-active-exempt.js`、`test-b85-feedback.js` 为准。
+
+## v1.3.3（b85）反馈机制
+
+- 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、宿主问卷（`globalThis.__DSH_CONTACT_CONFIG__` 契约：`contactFormUrl`+`contactSource` → `prefill_source`/`prefill_device_info` + `hide_*` 声明，panel-layout 同款；缺失/畸形回退 `FEEDBACK_DEFAULT_SURVEY_URL` 飞书表单）、诊断复制（`buildDump()` + 环境块上剪贴板）。
+- **隐私红线**：`feedbackEnvBody()` 只含插件版本/构建、宿主版本、UA、语言四项，绝不包含 localStorage 值与面板名——dump 含面板名/重命名，复制必须显式点击（「复制诊断信息」），永不自动附到 URL。
+- `window.open` 必须在 click 处理器内同步调用（异步打开被 webview 弹窗拦截拦掉）；三个 UI 入口（设置卡/palette 命令/诊断按钮）都守此约。
+- 回归：`D:\code\.tmp-dpp-test\test-b85-feedback.js`（27 断言：URL 构造、契约读取、回退、剪贴板失败 toast、隐私不泄漏）；测试钩子 `window.__dppFeedback`。
 
 ## 宿主契约（v1.3.2 b84 实测，桌面端 0.2.2-rc.5）
 

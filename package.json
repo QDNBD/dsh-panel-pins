@@ -1,8 +1,8 @@
 {
   "name": "dsh-panel-pins",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "type": "module",
-  "description": "Keyboard-first sidebar panel launcher for DeepSeek Harness: grouped searchable Panels menu with hit highlighting, Alt+1..9 direct jumps, MRU, mirrored by a Ctrl+K command palette with named layout presets. Pin/top/hide/rename rows (drag-to-reorder with a drop indicator, Move-to-front fallback), custom groups, icon-only mode, compact footer, full Settings page, and settings export/import via clipboard, file AND drag-drop. v1.3.2: a single-hidden row that IS the active panel stays visible (leaving re-hides it; collection mode still suppresses; whitelist wins). Display-layer only: no DOM surgery, clean uninstall, theme-token styling. THE primary install name; the @qdnbd scoped package is frozen at 1.2.1 (final alias).",
+  "description": "Keyboard-first sidebar panel launcher for DeepSeek Harness: grouped searchable Panels menu with hit highlighting, Alt+1..9 direct jumps, MRU, mirrored by a Ctrl+K command palette with named layout presets. Pin/top/hide/rename rows (drag-to-reorder with a drop indicator, Move-to-front fallback), custom groups, icon-only mode, compact footer, full Settings page, and settings export/import via clipboard, file AND drag-drop. v1.3.2: a single-hidden row that IS the active panel stays visible (leaving re-hides it; collection mode still suppresses; whitelist wins). v1.3.3: click-triggered feedback — a pre-filled GitHub issue, the host questionnaire (the shell's __DSH_CONTACT_CONFIG__ contract), and a manual copy-diagnostics button; zero automatic reporting. Display-layer only: no DOM surgery, clean uninstall, theme-token styling. THE primary install name; the @qdnbd scoped package is frozen at 1.2.1 (final alias).",
   "keywords": [
     "deepseek",
     "deepseek-harness",
