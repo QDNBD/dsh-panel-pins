@@ -12,16 +12,15 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-18，准备发布 v1.3.1）
+## 当前状态（2026-11-22，准备发布 v1.4.2）
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | **`dsh-panel-pins@1.2.1`**（裸名 latest，registry 在线；1.2.2 起进入单发布时代，scoped 冻结在 1.2.1） |
-| **本次待发** | **v1.3.1（b83，commit e7fa783）**——侧栏行拖拽排序（1.2.2）+ rc.3 DOM 适配（1.2.3–1.2.7）+ rc.3 滚动独立/行网格对齐/手动滚轮（1.2.8–1.3.0）+ 单会话滚动条（1.3.1）。发布前校验全绿：回归 68 过/4 挂（=b73 基线遗留）、node --check ✅、pack 10 文件 83.6 kB ✅、`.dist` 本地 tgz 与 npm 包字节级一致 ✅、宿主 0.2.2-rc.3 在兼容区间 ✅。发布命令：仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布，一次 OTP） |
-| 发布后动作 | ① 本机 profile 依赖从 `file:.dist` tgz 切到 registry `1.3.1`（pnpm 重算 lockfile，重启重铺即已发布版本，与 npm 用户同构）；② `publishing/awesome-dsh-plugin--*.yml` 已更新（拖拽 + rc.3 适配描述），如需改收录描述提 PR 到 awesome-dsh-plugin 仓库 `data/plugins/QDNBD__dsh-panel-pins.yml`；③ 更新本表 |
-| 版本史（裸名） | 0.0.0-stage（npm 审核占位）→ 0.0.1/1.1.1（占位 stub）→ 1.2.0/1.2.1（真包+alias 同步）→ **1.2.2 起单发布**（1.2.2 拖拽排序、1.2.3–1.2.7 rc.3 DOM 适配、1.2.8–1.3.0 rc.3 滚动/网格、1.3.1 单会话滚动条） |
-| 本机安装 | ✅ tgz 管线装 1.3.1（SRC==INST、b83 验证、三处补丁点 + `.bak-dpp` 备份齐） |
-| 收录描述 | `publishing/awesome-dsh-plugin--*.yml` 已更新至 v1.3.1 内容（拖拽排序 + rc.3 深度适配） |
+| npm 主包 | `dsh-panel-pins@1.3.1`（latest；1.3.2–1.4.1 均为本地 tgz 安装，未过 npm） |
+| **本次待发** | **v1.4.2（b88，commit 4f0b7eb）**——设置页快捷面板 13/13 严格对齐（settings-section 桥接完备：v1.4.0 桥接第三方页 + v1.4.1 全量铺开 + v1.4.2 自身 section）。发布前校验全绿：桥接套件 41/41、主套件 64/72（8 挂 = HEAD 基线遗留）、node --check ✓、dry-run 10 文件 99.0 kB ✓。GitHub Release 已发：tag v1.4.0/v1.4.1/v1.4.2 已推，Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.2 ✓ |
+| 阻塞项 | **npm token 已失效**（whoami E401、publish E404）——需人工 `npm login --registry https://registry.npmjs.org` 浏览器认证（2FA 安全密钥/TOTP）后重试 publish |
+| 发布命令 | 仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布，一次 OTP） |
+| 发布后动作 | ① 本机 profile 依赖从 file:.dist tgz 切到 registry `1.4.2`（pnpm 重算 lockfile，重启即可）；② awesome-dsh-plugin 收录描述如需更新提 PR（data/plugins/QDNBD__dsh-panel-pins.yml）；③ 更新本表 |
 
 ## 历史状态（2026-10-28，v0.7.3 首发）
 
