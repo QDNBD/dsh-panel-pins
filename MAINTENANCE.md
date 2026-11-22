@@ -54,7 +54,16 @@
 - 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、作者自有问卷（`FEEDBACK_SURVEY_URL` = 作者自己的飞书表单 rcnenqajjbvx.feishu.cn——**绝不指向宿主问卷** `trtgsjkv6r.feishu.cn`，那是 DSH 官方的表单，插件作者收不到提交）、诊断复制（`buildDump()` + 环境块上剪贴板）。宿主 `__DSH_CONTACT_CONFIG__.contactSource` 只作 `prefill_source` 的来源标注，永不改变目的地。
 - **隐私红线**：`feedbackEnvBody()` 只含插件版本/构建、宿主版本、UA、语言四项，绝不包含 localStorage 值与面板名——dump 含面板名/重命名，复制必须显式点击（「复制诊断信息」），永不自动附到 URL。
 - `window.open` 必须在 click 处理器内同步调用（异步打开被 webview 弹窗拦截拦掉）；三个 UI 入口（设置卡/palette 命令/诊断按钮）都守此约。
-- 回归：`D:\code\.tmp-dpp-test\test-b85-feedback.js`（27 断言：URL 构造、契约读取、回退、剪贴板失败 toast、隐私不泄漏）；测试钩子 `window.__dppFeedback`。
+- 回归：`D:\code\.tmp-dpp-test\test-b85-feedback.js`（29 断言：URL 构造、契约读取、回退、剪贴板失败 toast、隐私不泄漏；版本断言从 package.json 动态读取，改版本号不再破坏测试）；测试钩子 `window.__dppFeedback`。
+
+## v1.4.0（b86）设置页桥接进 launcher
+
+- 机制（dsh-panel-control 先例适配，前缀 `dpp-bridge-`）：只注册 `settings.section` 无侧栏入口的第三方页面搬进 Panels 菜单——注册 `main` keyed 面板（`dpp-bridge-<section id>`，声明自有子槽）+ 把 section 组件**带顶层 `inject`/`store`/`locale`**（宿主 StoredEntry 顶层字段，不在 `options` 里——0.9.3 事故）重注册进子槽；壳组件顶栏「返回对话」= `layout.selectPanel(null)`。
+- 归属启发式：id 精等 / 剥 `-settings` 后等 / 面板 id 以 `-<base>` 结尾（**含 idx>=0 守卫**——`indexOf` 的 -1 会与算术 -1 撞车造成误判归属）/ label 同名 → 视为已有入口；内置五件（account/general/models/agent-presets/plugins）、自有 section、声明了 `children` 的 section、无组件 section 一律排除。
+- 菜单呈现：launcher overlay 新增「设置页」组（`group: 'bridge'`），点击 = `layout.selectPanel(bridgeId)`；无 layout 服务时整组隐藏（无死行）；空清单守卫放宽（`bridgeSettings.entries.size === 0` 才 early-return）。
+- 对账纪律：只做增删（绝不重注册未变化的行，避免交互中重挂载）；120ms 去抖；`settings.section` 订阅**可重试**（声明前 subscribe 观察不到任何东西）；启动重扫 `[350, 900, 2000, 4200, 8000, 15000]ms`；每个 `slots.register` try/catch + 成对回滚——**register 抛错泄漏进 loader.start() 会中止整个启动**（文档化事故）。
+- 开关：`dsh-panel-pins:bridge`（默认开）+ 设置卡 switchRow；关闭即成对撤回，若正停在该页先 `selectPanel(null)`（选中不存在的 key = 空列死屏）。dispose 事件清理全部配对 + 订阅 + 定时器。
+- 回归：`test-b86-bridge.js`（42 断言：识别启发式全套、顶层字段透传、成对注册/回滚、开关撤回与安全着陆、overlay 组渲染与点击选中、晚注册订阅、dispose 清理、无 layout 降级）；测试钩子 `window.__dppBridge`。
 
 ## 宿主契约（v1.3.2 b84 实测，桌面端 0.2.2-rc.5）
 
