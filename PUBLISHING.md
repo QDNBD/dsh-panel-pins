@@ -22,7 +22,7 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | registry 核验 | ✓ version 1.4.2 = latest；✓ tarball https://registry.npmjs.org/dsh-panel-pins/-/dsh-panel-pins-1.4.2.tgz；✓ repository 回链 + engines.dsh 区间 |
 | 本机切换 | ✓ profile 依赖已从 file:.dist tgz 切到 registry `^1.4.2`（pnpm --registry 官方源重算 lockfile，安装副本 BUILD=b88 与 git 字节一致） |
 | 收录 PR | ✓ awesome-dsh-plugin 描述更新至 v1.4.2（设置页桥接完备 13/13）：https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/17824 |
-| 发布命令 | 仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布，一次 OTP） |
+| 发布命令 | 仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布）— **每次 publish 都需人工浏览器 OTP**（EOTP 待用户完成，非交互终端只能拿到掩码 URL） |
 | 发布后动作 | ① 本机 profile 依赖从 file:.dist tgz 切到 registry `1.4.2`（pnpm 重算 lockfile，重启即可）；② awesome-dsh-plugin 收录描述如需更新提 PR（data/plugins/QDNBD__dsh-panel-pins.yml）；③ 更新本表 |
 
 ## 历史状态（2026-10-28，v0.7.3 首发）
