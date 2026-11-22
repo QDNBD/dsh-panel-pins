@@ -12,12 +12,12 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-22，准备发布 v1.4.2）
+## 当前状态（2026-11-22，已发布 v1.4.3）
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | **`dsh-panel-pins@1.4.2`**（latest，2026-11-22；1.3.2–1.4.1 为本地 tgz 安装未过 npm，版本号跳号不影响安装） |
-| **本次待发** | **v1.4.2（b88，commit 4f0b7eb）**——设置页快捷面板 13/13 严格对齐（settings-section 桥接完备：v1.4.0 桥接第三方页 + v1.4.1 全量铺开 + v1.4.2 自身 section）。发布前校验全绿：桥接套件 41/41、主套件 64/72（8 挂 = HEAD 基线遗留）、node --check ✓、dry-run 10 文件 99.0 kB ✓。GitHub Release 已发：tag v1.4.0/v1.4.1/v1.4.2 已推，Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.2 ✓ |
+| npm 主包 | `dsh-panel-pins@1.4.2` → **1.4.3 待发**（b89，构建号隐藏）；本机 profile 暂用 file:.dist tgz 1.4.3，发布后切回 registry |
+| **本次待发** | **v1.4.3（b89）**——构建号收为内部标识：设置页脚注与 issue 环境块只显示 `v1.4.3`，（b89）仅存于 `?dppdebug` 诊断。前线功能（13/13 桥接对齐）不变。发布前校验全绿：桥接套件 41/41、主套件 64/72（8 挂 = HEAD 基线遗留）、node --check ✓、dry-run 10 文件 99.0 kB ✓。GitHub Release 已发：tag v1.4.0/v1.4.1/v1.4.2 已推，Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.2 ✓ |
 | 状态 | **已发布**（2026-11-22 21:47，用户浏览器 2FA 认证后 publish 成功） |
 | registry 核验 | ✓ version 1.4.2 = latest；✓ tarball https://registry.npmjs.org/dsh-panel-pins/-/dsh-panel-pins-1.4.2.tgz；✓ repository 回链 + engines.dsh 区间 |
 | 本机切换 | ✓ profile 依赖已从 file:.dist tgz 切到 registry `^1.4.2`（pnpm --registry 官方源重算 lockfile，安装副本 BUILD=b88 与 git 字节一致） |

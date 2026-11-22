@@ -244,6 +244,7 @@ All four work on the same sidebar with different aims. **Enable only one at a ti
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.4.3** — build tag (bNN) removed from user-visible surfaces; it stays in `?dppdebug` only
 - **1.4.2** — the plugin's own settings section is bridged too; row count matches settings-entry count exactly
 - **1.4.1** — bridging at full parity: every `settings.section` becomes a launcher row
 - **1.4.0** — settings-only third-party plugins enter the Panels menu (main-keyed panel, original inject/store/locale passed through)
