@@ -16,9 +16,12 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | `dsh-panel-pins@1.3.1`（latest；1.3.2–1.4.1 均为本地 tgz 安装，未过 npm） |
+| npm 主包 | **`dsh-panel-pins@1.4.2`**（latest，2026-11-22；1.3.2–1.4.1 为本地 tgz 安装未过 npm，版本号跳号不影响安装） |
 | **本次待发** | **v1.4.2（b88，commit 4f0b7eb）**——设置页快捷面板 13/13 严格对齐（settings-section 桥接完备：v1.4.0 桥接第三方页 + v1.4.1 全量铺开 + v1.4.2 自身 section）。发布前校验全绿：桥接套件 41/41、主套件 64/72（8 挂 = HEAD 基线遗留）、node --check ✓、dry-run 10 文件 99.0 kB ✓。GitHub Release 已发：tag v1.4.0/v1.4.1/v1.4.2 已推，Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.2 ✓ |
-| 阻塞项 | **npm token 已失效**（whoami E401、publish E404）——需人工 `npm login --registry https://registry.npmjs.org` 浏览器认证（2FA 安全密钥/TOTP）后重试 publish |
+| 状态 | **已发布**（2026-11-22 21:47，用户浏览器 2FA 认证后 publish 成功） |
+| registry 核验 | ✓ version 1.4.2 = latest；✓ tarball https://registry.npmjs.org/dsh-panel-pins/-/dsh-panel-pins-1.4.2.tgz；✓ repository 回链 + engines.dsh 区间 |
+| 本机切换 | ✓ profile 依赖已从 file:.dist tgz 切到 registry `^1.4.2`（pnpm --registry 官方源重算 lockfile，安装副本 BUILD=b88 与 git 字节一致） |
+| 收录 PR | ✓ awesome-dsh-plugin 描述更新至 v1.4.2（设置页桥接完备 13/13）：https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/17824 |
 | 发布命令 | 仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布，一次 OTP） |
 | 发布后动作 | ① 本机 profile 依赖从 file:.dist tgz 切到 registry `1.4.2`（pnpm 重算 lockfile，重启即可）；② awesome-dsh-plugin 收录描述如需更新提 PR（data/plugins/QDNBD__dsh-panel-pins.yml）；③ 更新本表 |
 
