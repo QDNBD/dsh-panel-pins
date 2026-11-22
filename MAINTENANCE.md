@@ -49,6 +49,21 @@
 - 与独立版 `dsh-sidebar-tidy`（本地 CSS 补丁版 / GitHub 版）规则重叠：确认 panel-pins 稳定后建议用户卸载它们，避免叠加。
 - `test-git-b83.js` 在 b84 起固定 4 失败（whitelist 移除→收纳→菜单清点链路：entriesOfSlot 桩形态过时），与 b84/b85 改动无关——stash 对照实测 HEAD 与工作树失败集完全一致。以 `test-b84-active-exempt.js`、`test-b85-feedback.js` 为准。
 
+## 版本与构建号展示规范（2026-11-22 定稿，v1.4.3 起）
+
+**双层标识，内外有别：**
+
+| 标识 | 值例 | 允许出现的场合 | 禁止出现的场合 |
+| --- | --- | --- | --- |
+| **对外版本号** `VERSION` | `1.4.3` | 设置页脚注、issue 环境块、README、npm、GitHub tag/Release、收录描述、一切用户可见 UI | — |
+| **内部构建号** `BUILD` | `b89` | 源码 `const BUILD`（排障锚点）、`?dppdebug` 覆盖层（`BUILD=b89` 行 + 标题） | **一切用户可见 UI**：设置页脚注、issue/诊断环境块、弹层标题、README、Release 标题 |
+
+**理由**：官方发布渠道（npm/GitHub）每个版本号只有一个构建，`(bNN)` 对用户没有信息量，只会让人以为是版本号的一部分；它唯一的价值是**排障时区分本地 tgz 构建与 registry 构建**，而这只在 `?dppdebug` 里发生。
+
+**每次发版检查**：`grep -n "(b" lib/client.js` 应只命中源码常量与 dppdebug 分支；`grep -n "'dsh-panel-pins v'" lib/client.js` 的两处（脚注 ~L7809、环境块 ~L1359）都必须是 `'dsh-panel-pins v' + VERSION`，**不带** `+ ' (' + BUILD + ')'`。
+
+**历史**：v1.3.3–v1.4.2 曾把构建号放进脚注与环境块（当时的理由：issue 环境块与脚注一眼对照）；v1.4.3 起废止——对照需求由 `?dppdebug` 承担。
+
 ## v1.3.3（b85）反馈机制
 
 - 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、作者自有问卷（`FEEDBACK_SURVEY_URL` = 作者自己的飞书表单 rcnenqajjbvx.feishu.cn——**绝不指向宿主问卷** `trtgsjkv6r.feishu.cn`，那是 DSH 官方的表单，插件作者收不到提交）、诊断复制（`buildDump()` + 环境块上剪贴板）。宿主 `__DSH_CONTACT_CONFIG__.contactSource` 只作 `prefill_source` 的来源标注，永不改变目的地。
