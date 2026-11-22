@@ -90,3 +90,28 @@
 - **panellist 注册表改写**：`sidebar.panellist` 是 list 槽位；注册项对象不冻结、entriesOfSlot 原样交回 → 直写 entry.order/label/component 对下次投影可见但**不通知订阅者**，需再注册/销毁一个一次性行制造账本变更触发重投影；写前必比避免永不收敛的抖动；包装组件登记 WeakSet/WeakMap 供回读识别。5 项启动自检任一失败→只读降级。
 - **control 设置页补入口**：第三方插件只注册设置页没注册侧栏入口时自动补一行（wiring i/l/s = inject/locale/store 扫描）；设置页归属按 section id+label 启发式识别。
 - **layout 吸收左下角**：设置走宿主命令 `settings.open`（无绑定时 openSettings → 人工路径回放）；反馈走 `__DSH_CONTACT_CONFIG__` 公开问卷链接；登录跟随 `remote.$stream` account 流的 `startSignIn`（授权 URL 仅在 attempt 到 waiting-browser 后出现）。
+
+---
+
+## 七、2026-11-22 复核（发布 1.4.2 前）
+
+npm registry `latest` + api.npmjs.org（周：11-15 ~ 11-21；月：10-23 ~ 11-21），对照三家最新 README。
+
+| | panel-control | panel-layout | panellist | **pins** |
+| --- | --- | --- | --- | --- |
+| latest | 0.10.5（11-15） | 0.2.5（11-17） | 0.2.0（10-26） | 1.4.2（本地，未发布） |
+| npm 上最新 | 0.10.5 | 0.2.5 | 0.2.0 | **1.3.1（11-18）** |
+| engines.dsh | >=0.2.1-rc.3 | ^0.2.1-rc.3 \|\| ^0.2.2-0 | >=0.2.0-rc.2 <0.3.0-0 | **>=0.2.0-rc.1 <0.3.0-0** |
+| engines.node | — | >=22 | ^22.19 \|\| >=24 | **>=20** |
+| 周下载 | 513 | 552 | 298 | **1115** 🥇 |
+| 月下载 | 4264 | 2023 | 1336 | 1115（11-16 才建包，仅 6 天） |
+
+**变化点**
+
+1. **pins 周下载已反超，成四家第一**（11-16 首次调研时是 832 / 第三）。control 从 1636 掉到 513，与它 11-15 后停更（一周无新版）时间吻合——再次印证发版频率≈曝光。
+2. **硬缺口 ①（侧栏行拖拽）已消**：v1.2.2 已交付并写进 README。
+3. **设置页桥接追平 control**：control 0.10.5 与 pins v1.4.x 都做，但 pins 做到「全量对齐」——每个 `settings.section` 一行，含自身设置页（1.4.2）。
+4. **剩余硬缺口只有两个**：AI 自动分类（control 招牌）、按钮行/列表布局切换（layout 招牌）。换图标（panellist）、吸收左下角「更多」（layout）属低优先，不构成下载驱动。
+5. **兼容区间仍是独占卖点**：0.2.1-rc.3 之前的宿主上 control/layout 装不上；layout/panellist 还要 Node 22+，pins 是 Node 20 唯一可装。
+
+**结论**：README 定位继续押「键盘效率型启动器 + 全量收纳 + 最宽兼容」，对照表按四家分列写事实（不再写「其它同类 ❌」），并把 AI 分类/布局切换两个缺口在文末「怎么选」里如实指向竞品——降低装错后的差评，也避免「独家」claim 被证伪。
