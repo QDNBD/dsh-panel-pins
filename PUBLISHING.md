@@ -16,7 +16,7 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | `dsh-panel-pins@1.4.2` → **1.4.3 待发**（b89，构建号隐藏）；本机 profile 暂用 file:.dist tgz 1.4.3，发布后切回 registry |
+| npm 主包 | **`dsh-panel-pins@1.4.3`**（latest，2026-11-22 23:18）；GitHub Release 页 v1.4.3 ✓；本机 profile 已切回 registry `^1.4.3`（安装副本 b89 == git 字节一致） |
 | **本次待发** | **v1.4.3（b89）**——构建号收为内部标识：设置页脚注与 issue 环境块只显示 `v1.4.3`，（b89）仅存于 `?dppdebug` 诊断。前线功能（13/13 桥接对齐）不变。发布前校验全绿：桥接套件 41/41、主套件 64/72（8 挂 = HEAD 基线遗留）、node --check ✓、dry-run 10 文件 99.0 kB ✓。GitHub Release 已发：tag v1.4.0/v1.4.1/v1.4.2 已推，Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.2 ✓ |
 | 状态 | **已发布**（2026-11-22 21:47，用户浏览器 2FA 认证后 publish 成功） |
 | registry 核验 | ✓ version 1.4.2 = latest；✓ tarball https://registry.npmjs.org/dsh-panel-pins/-/dsh-panel-pins-1.4.2.tgz；✓ repository 回链 + engines.dsh 区间 |
