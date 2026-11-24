@@ -244,6 +244,7 @@ All four work on the same sidebar with different aims. **Enable only one at a ti
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.4.4** — fix the rc.5 sidebar workspace region refusing to scroll (the rc.3-era structural override CSS is now gated on the host scroll contract)
 - **1.4.3** — build tag (bNN) removed from user-visible surfaces; it stays in `?dppdebug` only
 - **1.4.2** — the plugin's own settings section is bridged too; row count matches settings-entry count exactly
 - **1.4.1** — bridging at full parity: every `settings.section` becomes a launcher row
