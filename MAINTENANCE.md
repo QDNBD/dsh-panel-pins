@@ -80,6 +80,14 @@
 - 开关：`dsh-panel-pins:bridge`（默认开）+ 设置卡 switchRow；关闭即成对撤回，若正停在该页先 `selectPanel(null)`（选中不存在的 key = 空列死屏）。dispose 事件清理全部配对 + 订阅 + 定时器。
 - 回归：`test-b86-bridge.js`（42 断言：识别启发式全套、顶层字段透传、成对注册/回滚、开关撤回与安全着陆、overlay 组渲染与点击选中、晚注册订阅、dispose 清理、无 layout 降级）；测试钩子 `window.__dppBridge`。
 
+## v1.4.4（b90）rc.5 滚动手令契约修复（2026-11-24）
+
+- **用户报告**：rc.5 桌面端 + 插件 1.4.3，「左侧工作区滑动不下去」。
+- **根因**：rc.5（`dsh-client-ui-sidebar`）把侧栏滚动改成了 **scroll-handoff**——视口 `div._scrollArea` 是绑定 `scrollHandoff.bindViewportRef` 的 **grid** + `container-type: scroll-state` 容器，视口先把面板导航滚走，工作区列表座 `div[data-sidebar-list-area]`（`dsh-client-ui-workspace` WorkspaceBrowser）再经 `@container scroll-state(scrollable: bottom)` 接管。1.4.3 的 b79 把 `_scrollArea` 强改 flex、b83 把工作区 root 解限高、b81 在 nav 上 capture 拦滚轮——三者都破坏了这条契约：工作区永远等不到接管，滚轮被 b81 吃掉。
+- **修复**：`detectScrollContract()`——`_scrollArea` 带 `data-sidebar-scrollport` 标记 = rc5；不带 = rc3；都没有 = null（legacy，不加结构规则）。b79/b83 结构规则与 b81 滚轮劫持全部限定 `html.dpp-rc3`；rc.5 只保留不门控的面板列表限高（到列表末尾自然链给视口，正是宿主契约）。检测结果暴露在 `window.__dppScrollContract`。
+- **回归**：`test-b90-scroll-contract.js` 16 断言（rc5/rc3/legacy 三形态 × 门控类 × 滚轮劫持 × 样式表门控 + 面板限高不门控）；b84 26/26、b86 41/41 不变；b85 的 3 失败为测试自身陈旧断言（还在断言 `v1.4.3 (b89)` 形态，HEAD stash A/B 实测一致），与本次无关。
+- **验证边界**：官方 dsh-doc 验证参考禁止从 shell 拉独立浏览器/找 web token——rc.5 真机滚轮行为待用户重启桌面应用后确认；静态证据链：宿主 `SidebarRoot.tsx`/`scroll-handoff.ts`/`SidebarRoot.module.css`/`WorkspaceBrowser.module.css`（asar 内 src 直读）。
+
 ## 宿主契约（v1.3.2 b84 实测，桌面端 0.2.2-rc.5）
 
 从安装目录 asar 提取 `@deepseek-ai/dsh-client-ui-layout` 的 client.js 逐字核实（提取法：读 asar 头 JSON 拿文件 offset/size，`8 + headerSize + offset` 处读 bytes）：
