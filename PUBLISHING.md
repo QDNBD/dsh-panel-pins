@@ -12,15 +12,17 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-25，v1.4.8 本机 tgz 已装，待用户验证；npm 未发布）
+## 当前状态（2026-11-25，已发布 v1.4.8）
 
 | 项 | 值 |
 | --- | --- |
-| 本次修复 | **v1.4.8（b94）** rc.5 限高列表滚轮失效（用户报告：工作区可以滑动、列表滑动不了；1.4.5–1.4.7 三版都未修好）。根因有二：① 1.4.4 起 rc.5 免驱动限高——宿主手令视口处理器 preventDefault 所有导航区滚轮事件，列表自身永远滚不了；② **1.4.7 致命样式表事故**——EXTRA_CSS 中 `html.dpp-rc3 [class$="_regionArea"] {` 被意外复制两遍，声明块内的裸选择器是坏声明，按 CSS 规范其残余消费会吞到下一个顶层 `;`（本样式表没有），**其后全部规则被静默丢弃**（滚动条主题/tidy 底部/icon-only/.dpp-launcher/弹层全灭）。 |
-| 修复方式 | 以 v1.4.4 为基底（用户已验证工作区正常）+ 移植 1.4.7 的 LITE 驱动（列表可吸收步 preventDefault + 驱动列表；边界步原样放行给宿主手令；不 stopPropagation、不代写 viewport——1.4.5 弄坏工作区的两件事）。**EXTRA_CSS 保持 1.4.4 逐字节一致**（node 比对验证）。回归：b90 套件更新至 b94 契约 29/29（新增：无连续重复选择器行、launcher/overlay 样式未被截断）、b84 26/26、b86 41/41。 |
-| 本机安装 | ✓ pack.ps1 全绿：tgz `D:\code\.dist\local-dsh-panel-pins-1.4.8.tgz`（100 KB）→ profile 三处（package.json / pnpm-lock.yaml / .modules.yaml）指向 1.4.8；安装副本 BUILD=b94，SRC==INST SHA256 一致；备份 `.bak-dpp`。`node_modules/.pnpm/lock.yaml`（虚拟存储派生副本）仍为 1.4.4 旧态——今晨 registry 切换前即已陈旧，pnpm 重铺时自动重建，未处理。 |
-| 待办 | ① 用户重启桌面端验证：列表可滚 + 工作区可滚；② 验证通过后 `npm publish --access public --registry https://registry.npmjs.org`（**需人工浏览器 OTP**）+ GitHub tag/Release；③ 本表切「已发布」。 |
-| 收录 PR | 暂无需更新（bugfix 不改收录描述） |
+| npm 主包 | **`dsh-panel-pins@1.4.8`**（latest，2026-11-25 20:4x 用户浏览器 OTP 后 publish 成功）；shasum `648a46960ae39b3c9312c9e5ee8fbe2d66215bc1` 与用户终端输出一致 ✓；包内 README 已含 20:44 新增的亮点区块（commit 2e998b8，README.md 20.0kB） |
+| GitHub | tag v1.4.8 已推 ✓；Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.8 ✓ |
+| registry 核验 | ✓ `dist-tags.latest = 1.4.8`（发布后约 2–4 分钟 CDN 传播完成）；✓ tarball https://registry.npmjs.org/dsh-panel-pins/-/dsh-panel-pins-1.4.8.tgz |
+| 本机切换 | ✓ profile 依赖已从 file:.dist tgz 切回 registry `^1.4.8`（pnpm --registry 官方源重算 lockfile，14.7s；安装副本 BUILD=b94，SRC==INST SHA256 一致）；备份 `.bak-reg-1.4.8-20261125-204845` |
+| 本次修复 | **v1.4.8（b94）** rc.5 限高列表滚轮失效（用户报告：工作区可以滑动、列表滑动不了；1.4.5–1.4.7 三版都未修好）。根因：① 1.4.4 起 rc.5 免驱动限高——宿主手令视口处理器 preventDefault 所有导航区滚轮事件，列表自身永远滚不了；② **1.4.7 致命样式表事故**——EXTRA_CSS 中 `html.dpp-rc3 [class$="_regionArea"] {` 被意外复制两遍，坏声明残余消费吞到顶层 `;`（本样式表没有），其后全部规则被静默丢弃。修复 = v1.4.4 基底 + LITE 驱动（吸收步 preventDefault+驱动列表、边界步放行、无 stopPropagation/无 viewport 代写），EXTRA_CSS 与 1.4.4 逐字节一致。回归：b90 更新至 b94 契约 29/29、b84 26/26、b86 41/41。**用户重启后确认「正常了」**。 |
+| 发布过程事故 | EOTP 走的是 TOTP 6 位码路径（与 11-25 早间 1.4.4 的浏览器 OTP 流程不同）；用户选择自行在终端执行 publish 命令完成认证。 |
+| 收录 PR | 无需更新（bugfix 不改收录描述） |
 
 ## 历史状态（2026-11-25，已发布 v1.4.4）
 
