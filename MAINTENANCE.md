@@ -65,6 +65,44 @@
 
 **历史**：v1.3.3–v1.4.2 曾把构建号放进脚注与环境块（当时的理由：issue 环境块与脚注一眼对照）；v1.4.3 起废止——对照需求由 `?dppdebug` 承担。
 
+## v1.5.0（b95）宿主快捷键 + 拼音搜索 + 主面板入口（2026-11-25）
+
+调研见 [COMPETITOR-ANALYSIS.md](COMPETITOR-ANALYSIS.md) 第八节。宿主版本 0.2.2-rc.5。
+
+### ① `Ctrl+K` 注册进宿主快捷键服务
+
+- **契约来源**：`app.asar` 字符串扫描 + 宿主 `dsh-client-shortcuts` 的 README。命令形状：
+  `{ id, label: () => string, aliases: string[], defaults: Partial<Record<'desktop|web>:'macos|windows|linux', {code, modifiers}>>, regions: ('page'|'editable'|'terminal')[], modals: string[], resolve(ctx) => {status:'handled',run} | {status:'pass'} | {status:'blocked',reason} }`。
+- **绑定键位用 `code`（物理键）+ `modifiers:['primary']`**（`primary` 在 macOS 展开为 Cmd、其它为 Ctrl）。宿主拒绝重复 id 与**重叠默认键位**——宿主将来自己占用 Ctrl+K 时 `register()` 会抛异常。
+- **必须自己写守卫**：宿主 `dispatch()` 里 `priority = runtime==='desktop' && (windows||macos)`——**Desktop 端不自动执行 `regions`/`modals` 检查**（只有 Web 路径执行）。所以「不在宿主输入框里抢键」的判定必须放在我们的 `resolve()` 里，用宿主算好的 `context.region`（'editable'/'terminal'/'page'），比旧的手工嗅探 `event.target` 可靠（宿主还管 shadow root 与 xterm）。
+- **回退是契约不是错误路径**：服务不存在（<0.2.2）或 `register()` 抛错 → 保留原来的 `document keydown` 监听（`hostShortcutActive` 为 false 时才由它接管）。宿主接管后我们的 DOM 监听**必须让位**，否则「宿主 toggle 关闭 + 插件再开」会互相抵消。
+- **我们自己的搜索框也是 editable 区**：宿主 `resolve` 在 editable 区返回 pass，所以 palette 里的 Ctrl+K 关闭由搜索框自己的 keydown 处理。
+- `modals: []`：Web 路径下任何打开的模态都会挡下命令，与我们在 `resolve` 里的判断一致。
+- 清理：`dispose` 事件里调用 `register()` 返回的 disposer（孤儿绑定会把 Ctrl+K 永久占住）。
+
+### ② 拼音搜索
+
+- 字表 = **完整 GB2312（一级 + 二级，6763 字）** → 拼音（无声调），紧凑编码成 `<汉字><ascii 拼音>` 记录流，单引号字符串字面量内联在 `lib/client.js`。GBK 独有的生僻字（如 龘）不在表内 → 退回字面匹配，不报错。
+- 生成脚本 `scripts/gen-pinyin.mjs`（仅构建期用 `pinyin-pro` + `iconv-lite`，**插件运行时零依赖**）。字表由脚本注入，**不要手改**。
+- 注入坑（踩了两次）：① `String.replace` 的**字符串替换值**会解释 `$&` / `$'` 等模式 → 必须用**替换函数**；② 占位符往返替换会多出一层引号（`'__X__'` → `'表'` 变成 `''表''`）→ 直接**按行重建**那一行，别用正则截断整行（正则 `[^']*` 会在双引号处截断，留下半截字表）。
+- 匹配层级（分数从高到低）：字面全等 > 字面前缀 > 拼音首字母全等 > 全拼前缀 > 字面子串 > 首字母子串 > 全拼子串 > 模糊子序列（按间隔扣分）。**字面命中永远压过拼音命中**，与用户直觉一致。
+- **按显示名匹配**（`displayNameFor`），不是原始 label——重命名过的行才是用户看到的名字。
+- 排序只在**组内**做（组序不变，`replayGroupFolds` 依赖「组头 + 相邻子项」）。清空搜索框必须**恢复原顺序**（`menuItems` 数组保存原始次序，用 `insertBefore` 复位）。`Array.prototype.sort` 稳定 → 同分保持原序。
+
+### ③ 主面板入口
+
+- 宿主 `ui-layout` 用 `ctx.slots.entries('main')` 枚举主面板（`entry.options.key`），我们读**同一个公开槽位**；打开用 `layout.selectPanel(key)`——与设置页桥接同一调用。
+- 排除：宿主会话列 `conversation`、我们自己的 `dpp-bridge-*`（已在「设置页」组里）。
+- 标签：优先 `options.label` → `options.title` → 槽位 key（第三方多半只给 key，会显示原始 id，属可接受的降级）。
+- **右侧栏标签页不做**：better-sidebar 的 tab 落在宿主原生右栏，宿主**没有** `openGuide` 之类的公共打开 API（`openGuide` 在 asar 里 0 命中），只有 `openResource` 这类按地址打开的接口——枚举出来也点不开，故不做（宁可不做，也不做点不动的死行）。
+
+### 回归
+
+- 新套件 `D:\code\.tmp-dpp-test\test-b95-shortcuts-mainpanels.js`（25 项）：宿主命令注册/解析器三种上下文/销毁解绑/宿主接管后不重复触发/注册被拒时回退/主面板组渲染与点击选中/拼音搜索与清空复原。
+- `test-b95-pinyin.js`（16 项）：直接**从 client.js 抽取真实匹配代码**执行（不是另写一份实现），避免测试与实现漂移。
+- **b85 套件的版本断言此前写死 `v1.4.0` / `b86`**（v1.4.3 起契约已去掉用户可见构建号），6 项长期失败；已改成从 package.json 与源码动态读取，现 29/29。
+- b84 26/26、b86 41/41、b90 29/29 保持不变。
+
 ## v1.3.3（b85）反馈机制
 
 - 三通道全点击触发、零自动上报：GitHub issue（URL params 预填 title/body）、作者自有问卷（`FEEDBACK_SURVEY_URL` = 作者自己的飞书表单 rcnenqajjbvx.feishu.cn——**绝不指向宿主问卷** `trtgsjkv6r.feishu.cn`，那是 DSH 官方的表单，插件作者收不到提交）、诊断复制（`buildDump()` + 环境块上剪贴板）。宿主 `__DSH_CONTACT_CONFIG__.contactSource` 只作 `prefill_source` 的来源标注，永不改变目的地。

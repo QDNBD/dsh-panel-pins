@@ -12,7 +12,20 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-25，已发布 v1.4.8）
+## 当前状态（2026-11-25，**v1.5.0 待发布**，npm 上仍是 v1.4.8）
+
+| 项 | 值 |
+| --- | --- |
+| npm 主包 | `dsh-panel-pins@1.4.8`（latest，已发布）。**v1.5.0 尚未 publish**——本机验证 + 用户 OTP 后执行 |
+| 待发布内容 | **v1.5.0（b95）** 三件事：① `Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；② 搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；③ 只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
+| 回归 | b95 新套件 25/25（宿主快捷键注册/解析器语义/拒绝注册回退/主面板组/拼音搜索）+ b95 拼音纯函数 16/16 + b84 26/26 + b86 41/41 + b85 29/29（顺手修好该套件写死的 `v1.4.0`/`b86` 陈旧断言，改成从 package.json 与源码动态读取）+ b90 滚动契约 29/29 |
+| 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新能力在无 `shortcuts` 服务的宿主上自动降级，不影响 0.2.0/0.2.1 线 |
+| GitHub | tag v1.5.0 未推；Release 页待建 |
+| 本机切换 | ✅ **已切到本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`，SRC==INST SHA256 一致）；**待 1.5.0 发布后**再切回 registry `^1.5.0` |
+| 旧 scoped 包 | ✅ **2026-11-25 已废弃全部 9 个版本**（含 latest=1.2.1），文案指向裸名包；`latest` 保留仍可装，只打 warning。见下方「2026-11-25 分发动作 ①」 |
+| 收录 PR | 待更新：补 `pinyin` / `shortcut` / `main-panel` 关键词（见下方「2026-11-25 分发动作」②） |
+
+## 历史状态（2026-11-25，已发布 v1.4.8）
 
 | 项 | 值 |
 | --- | --- |
@@ -202,3 +215,60 @@ npm view dsh-panel-pins deprecated --registry https://registry.npmjs.org
 - v1.2.0（b70）已交付：settings transfer 文件导出/导入（jsdom 回归 57 项断言）+ 包名统一。
 - v1.3.0 规划：AI 自动分类（参考 control 实现要点：发面板名给宿主模型分 2-4 组、手动改动锁定语义）。
 - v1.2.x 排期观察：侧栏行 HTML5 拖拽排序（触屏「移到最前」箭头，参考 COMPETITOR-ANALYSIS.md 附录 layout 实现要点）。
+
+## 2026-11-25 分发动作（1.5.0 同步）
+
+### ① 旧 scoped 包仍在分流新用户 —— 根因是 latest 没被标废弃
+
+调研实测（npm 日曲线 2026-11-08 ~ 11-24）：
+
+| 日期 | 裸名 `dsh-panel-pins` | scoped `@qdnbd/dsh-panel-pins` |
+| --- | ---: | ---: |
+| 11-16（裸名首发） | **555** | 230 |
+| 11-17（scoped 最后一版 1.2.1） | 206 | 253 |
+| 11-18 → 11-21 | 195 → 66 → 55 → 38 | 53 → 35 → 30 → 26 |
+| 11-22（发 1.4.2） | **362** | 28 |
+| 11-23 → 11-24 | 48 → 62 | 26 → 34 |
+
+裸名包 11-16 才存在（之前全是 0）。scoped 包 11-17 之后从 253/天掉到 **26–34/天的地板**——不是切换尾巴，是一条平基线（切换前基线就是 40–70/天）。**约一半安装量仍落在冻结的 1.2.1 上**（~30/天 ≈ 900/月）。
+
+**根因**（registry packument 实测）：scoped 包 9 个版本里**已有 8 个带 deprecation**（`0.0.0-stage`…`1.2.0`，文案一致），**唯独 `latest` = 1.2.1 没标废弃**。而 `npm install @qdnbd/dsh-panel-pins` 装的正是 latest → **毫无警告地装上冻结版**。
+
+**排除项**（都干净，不用动）：
+- 官方市场目录 `dsh-plugin-catalog`（6885 条）里**只有裸名一条**，无 scoped 条目；
+- awesome-dsh-plugin 收录 YAML 指向裸名（`npm:` 字段自动采集自仓库 package.json）；
+- 本机 `dshmarket` 插件不硬编码本插件条目。
+
+**修复：一条命令，无需发版**（写操作要 OTP，用户在自己终端跑一次）：
+
+```powershell
+npm deprecate '@qdnbd/dsh-panel-pins@1.2.1' 'Scoped package frozen: install dsh-panel-pins (bare name) instead — all future versions ship there.' --registry https://registry.npmjs.org
+```
+
+> npm 会打印一个浏览器认证 URL，点完即完成（EOTP 流程）。**不必发 1.2.2**——不用改代码、不用升版本号，deprecate 只是包文档的元数据操作，可随时撤销（`npm deprecate ... ""`）。
+>
+> 顺带（同样免 OTP）：在 npmjs.com 网页端把 `@qdnbd/dsh-panel-pins` 的 README 换成 `publishing/scoped-migration/README.md` 的内容——**改 README 不产生新版本**，但 npm 页面会立刻显示迁移提示。
+
+> **决策依据的变化**：2026-11-16 当时的「不 deprecate」理由是「deprecated 包会被市场索引降权，alias 必须保持干净」——那时 scoped 还是**主包**。11-17 单发布收敛后主包已换成裸名，且 scoped 包**已有 8 个版本被废弃**，把最后一个也标上只是补齐既定意图，不新增降权面。
+
+**✅ 已执行（2026-11-25 22:2x，用户在自己终端完成 EOTP 浏览器认证）**。registry packument 回读核验：
+
+| 核验项 | 结果 |
+| --- | --- |
+| `npm view '@qdnbd/dsh-panel-pins' deprecated` | ✅ `Scoped package frozen: install dsh-panel-pins (bare name) instead  all future versions ship there.` |
+| `npm view '@qdnbd/dsh-panel-pins@1.2.1' deprecated` | ✅ 同上 |
+| 9 个版本逐个检查 | ✅ **全部 9 个**（`0.0.0-stage` … `1.2.1`）都带 deprecation，无漏网 |
+| `dist-tags.latest` | 仍是 `1.2.1`（**故意保留**：仍可安装，只是装时打 warning——不阻断、不断供） |
+| 存储串字节 | 纯 ASCII；原本的 `—` 在 PowerShell 控制台编码往返中被吞成两个空格，其余文案无 mojibake，语义完整 |
+
+**效果边界**（写在这里免得日后误判）：只影响**此后新执行一次 `npm install @qdnbd/dsh-panel-pins` 的人**，让 npm 打 `npm warn deprecated ...` 指向裸名包；**不阻断安装、不改代码、不升版本号、不动已发布 tarball**；**对已装的旧实例零影响**（老用户不会收到任何提示，且 pin 配置需自行导出 → 装裸名包 → 导入，不会自动迁移）。撤销方式：`npm deprecate '@qdnbd/dsh-panel-pins@1.2.1' '' --registry https://registry.npmjs.org`（注意必须显式带版本号，空串会废弃整包所有版本）。
+
+### ② README 对照表从「四家」扩到「十一家」
+
+- `README.md` / `README.zh.md` 的对照表已按 2026-11-25 的实测数据重写，纳入 `panel-compact` / `panel-tidy` / `panel-titlebar` 三个新对手，并如实标出它们各自的招牌（AI 分类 / 按钮行布局 / 标题栏模式 / 触屏长按拖动）。
+- 「怎么选」表同步扩到十一家。
+- 收录描述（`publishing/awesome-dsh-plugin--data-plugins-QDNBD__dsh-panel-pins.yml`）待 PR 更新：补 `pinyin` / `shortcut` / `main-panel` 关键词。
+
+### ③ 1.5.0 发布状态
+
+见下方「当前状态」表。npm / GitHub Release 均**未发布**——等待用户本机验证 + OTP publish。

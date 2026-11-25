@@ -36,11 +36,12 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 
 ## ✨ Highlights
 
+- **⌨️ Any panel in two keystrokes** — a global `Ctrl+K` palette with instant search and hit highlighting, `Alt+1..9` direct jumps, and a Recent group that keeps your high-frequency panels on top. The sidebar becomes optional. The binding lives in the **host's own shortcut service**, so you can rebind it in *Settings → Shortcuts*.
+- **🔤 Search it in pinyin** — type `mbsn` to find 面板收纳, `mianban` to find 面板. The full GB2312 common-hanzi table ships in the plugin: **purely local, nothing leaves the machine**. Hits are ranked, so the best match lands on the first row.
 - **🖱️ Drag anything, anywhere** — grab any panel or plugin row and drop it where it belongs; a **blue insertion line** marks the exact landing spot. Works right in the sidebar *and* in the pinned manager, with a right-click *Move to front* fallback for touch/keyboard users. One click restores the host's default order.
-- **⌨️ Any panel in two keystrokes** — a global `Ctrl+K` palette with instant search and hit highlighting, `Alt+1..9` direct jumps, and a Recent group that keeps your high-frequency panels on top. The sidebar becomes optional.
 - **✏️ Make every row yours** — right-click to hide a row, rename it with a floating editor anchored under the row, pin it, or push it to the top. Display-only, survives restarts and language switches.
 - **💾 Named layout presets** — pins, folds, icon-only and the compact footer snapshot into one preset; flip "work" ↔ "play" in one click from the palette.
-- **🧲 Nothing is unreachable** — even third-party plugins that only registered a Settings page get their full page as a row in the menu.
+- **🧲 Nothing is unreachable** — third-party plugins that only registered a Settings page get their full page as a row in the menu; plugins that only registered a **main panel** land in the *Main panels* group.
 - **🧊 A sidebar that stays slim** — icon-only mode (18px glyph column) plus a compact footer with four independent height caps, so the session list never gets squeezed to a slit again.
 - **🛡️ Zero risk, zero residue** — display layer only, no DOM surgery, host re-render-proof; uninstall and the sidebar is pixel-identical to before. Light / dark / wallpaper themes all work.
 
@@ -56,37 +57,49 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 
 ## Why this one
 
-Among the four sidebar-panel plugins (`panel-control`, `panel-layout`, `panellist`, this one), only this plugin does all three:
+Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panellist`, `panel-compact`, `panel-tidy`, `panel-titlebar`, `panel-order`, `panel-folders`, `panel-collapse`, `panel-fold`, this one), only this plugin does all five:
 
-1. **You never open the sidebar.** A global `Ctrl+K` palette, in-menu search with hit highlighting, `Alt+1..9` jumps and an MRU group — the other three have none of these.
-2. **The whole layout saves as a preset.** Pins, top pins, folded groups, whitelist, icon-only and compact footer in one snapshot; restore a scenario in one click.
-3. **The widest host range.** Requires `DSH ≥ 0.2.0-rc.1` and `Node ≥ 20`; `panel-control` / `panel-layout` need `≥ 0.2.1-rc.3`, and `panel-layout` / `panellist` also need `Node ≥ 22`.
+1. **You never open the sidebar.** A global `Ctrl+K` palette, in-menu search with hit highlighting, `Alt+1..9` jumps and an MRU group — the other ten have none of these.
+2. **The shortcut belongs to the host.** `Ctrl+K` is registered with the host's own shortcut service: rebind it, see its conflicts, and let the host decide whether the key may fire instead of the plugin guessing.
+3. **Chinese users can actually search.** Pinyin initials (`mbsn` → 面板收纳), full pinyin (`mianban` → 面板) and fuzzy subsequences, over a bundled GB2312 table — **entirely local, nothing is sent anywhere**.
+4. **The whole layout saves as a preset.** Pins, top pins, folded groups, whitelist, icon-only and compact footer in one snapshot; restore a scenario in one click.
+5. **The widest host range.** Requires `DSH ≥ 0.2.0-rc.1` and `Node ≥ 20`; `panel-control` / `panel-layout` need `≥ 0.2.1-rc.3`, and `panel-layout` / `panel-tidy` / `panellist` also need `Node ≥ 22`.
 
-### Full comparison (2026-11-22, latest release of each)
+### Full comparison (2026-11-25, latest release of each)
 
-| Capability | **This plugin 1.4.2** | [panel-control 0.10.5](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) |
-| --- | :-: | :-: | :-: | :-: |
-| **Ctrl+K global command palette** | ✅ | — | — | — |
-| **In-menu search + hit highlighting** | ✅ | — | — | — |
-| **Alt+1..9 direct jump** | ✅ | — | — | — |
-| **Recent panels (MRU, cap 5)** | ✅ | — | — | — |
-| **Named layout presets** | ✅ | — | — | — |
-| Collect sidebar rows into a grouped menu | ✅ panels / plugin entries / settings pages | ✅ group tree | partial: overflow + bottom-left trio only | ✅ flyout groups |
-| Drag-to-reorder sidebar rows | ✅ live drop line | ✅ drag handle | ✅ | ✅ |
-| Hide / rename | ✅ / ✅ floating editor | ✅ / ✅ | overflow only / — | ✅ / ✅ |
-| Custom groups | ✅ | ✅ | — | ✅ |
-| Fold state remembered | ✅ | ✅ | — | —（flyout menus） |
-| Bridge settings-only plugins into the menu | ✅ v1.4, full parity | ✅ | — | — |
-| Settings export / import | ✅ clipboard + file + drag-drop | — | — | ✅ file |
-| Sidebar area caps | ✅ four independent sliders | ✅ adaptive | ✅ | — |
-| Active-row exemption | ✅ | —（self-protection only） | — | ✅ |
-| Icon replacement | — | — | — | ✅ 24 built-in |
-| Button-row / list layout + row cap | icon-only middle ground | — | ✅ 1–3 rows | — |
-| Absorb bottom-left *More* (settings / feedback / sign-in) | — | — | ✅ | — |
-| AI auto-classification | — | ✅ | — | — |
-| Host range | **≥ 0.2.0-rc.1 / Node ≥ 20** | ≥ 0.2.1-rc.3 | ^0.2.1-rc.3 / Node ≥ 22 | ≥ 0.2.0-rc.2 / Node ≥ 22 |
+> Facts only, no scorekeeping. **Enable one at a time** — they mutate the same sidebar nodes.
 
-> Source: npm registry `latest` plus each package's README, fetched 2026-11-22. The table records facts only — pick by your priority, see [*Which one?*](#which-one).
+| Capability | **This plugin 1.5.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| **Ctrl+K global command palette** | ✅ | — | — | — | — | — | — |
+| **Registered in the host's shortcut service (rebindable, conflicts visible)** | ✅ | — | — | — | — | — | — |
+| **Pinyin initials / full pinyin / fuzzy matching** | ✅ | — | — | — | — | — | — |
+| **Hits ranked by relevance** | ✅ | — | — | — | — | — | — |
+| **In-menu search + hit highlighting** | ✅ | — | — | — | — | — | — |
+| **Alt+1..9 direct jump** | ✅ | — | — | — | — | — | — |
+| **Recent panels (MRU, cap 5)** | ✅ | — | — | — | — | — | — |
+| **Named layout presets** | ✅ | — | — | — | — | — | — |
+| Collect sidebar rows into a grouped menu | ✅ panels / plugin entries / settings pages / main panels | ✅ group tree | partial: overflow + bottom-left trio only | ✅ flyout groups | ✅ keeps 3 rows | ✅ drag into *More* | — |
+| Drag-to-reorder sidebar rows | ✅ live drop line | ✅ drag handle | ✅ | ✅ | ✅ | — |
+| Hide / rename | ✅ / ✅ floating editor | ✅ / ✅ | overflow only / — | ✅ / ✅ | — / — | — / — | — |
+| Custom groups | ✅ | ✅ | — | ✅ | — | — | — |
+| Fold state remembered | ✅ | ✅ | — | —（flyout menus） | — | — | — |
+| Bridge settings-only plugins into the menu | ✅ v1.4, full parity | ✅ | — | — | — | — | — |
+| Bridge **main-panel**-only plugins into the menu | ✅ v1.5 | — | — | — | — | — | — |
+| Settings export / import | ✅ clipboard + file + drag-drop | — | — | ✅ file | — | — | — |
+| Sidebar area caps | ✅ four independent sliders | ✅ adaptive | ✅ | — | — | — | — |
+| Active-row exemption | ✅ | —（self-protection only） | — | ✅ | — | — | — |
+| Icon replacement | — | — | — | ✅ 24 built-in | — | — | — |
+| Button-row / list layout + row cap | icon-only middle ground | — | ✅ 1–3 rows | — | — | — | — |
+| Absorb bottom-left *More* (settings / feedback / sign-in) | — | — | ✅ | — | — | — | — |
+| Panel rows moved into the Windows title bar | — | — | — | — | — | — | ✅ |
+| AI auto-classification | — | ✅（sends entry names to the model provider） | — | — | — | — | — |
+| Touch drag / long-press to pick up a row | touch uses *Move to front* | — | touch uses an up-arrow | — | ✅ | ✅ 500ms hold | — |
+| Host range | **≥ 0.2.0-rc.1 / Node ≥ 20** | ≥ 0.2.1-rc.3 | ^0.2.1-rc.3 / Node ≥ 22 | ≥ 0.2.0-rc.2 / Node ≥ 22 | ≥ 0.2.0 | ≥ 0.2.0 / Node ^22.19 | ≥ 0.2.1-0 |
+
+> The remaining four are single-purpose: `panel-order` (sorting only), `panel-folders` (collapsible groups), `panel-collapse` (collapse the panel list), `panel-fold` (fold into *More*).
+>
+> Source: npm registry `latest` plus each package's README, fetched 2026-11-25. The table records facts only — pick by your priority, see [*Which one?*](#which-one).
 
 ## Features
 
@@ -99,18 +112,23 @@ A first-class sidebar row (pixel-aligned with host rows) opens a grouped menu wh
 | **Global panels** | The full inventory (pinned and unpinned alike), current one highlighted; unpinned panels open via a temporary-pin *peek* that restores your pin state |
 | **Plugin entries** | Third-party entry rows are auto-detected (zero hard-coded selectors; derived structurally between the new-session anchor and the panel list) and fire the **original** button, so each plugin's own open logic is untouched |
 | **Settings pages** | v1.4: third-party plugins that registered only a Settings section get their whole page in the menu — click a row to open the full page in the main area |
+| **Main panels** | v1.5: third-party plugins that registered only a **main panel** (root `main` slot) and no sidebar row land here — click a row to open it. The host's own conversation column and already-bridged settings pages are excluded |
 | **Recent** | MRU, cap 5, persisted — your high-frequency panels stay on top |
 | **Custom groups** | Groups you define ("daily"), members pulled out of the global list, per-group counts accurate |
 | **Hidden** | Every row you hid from the sidebar, with one-click restore-all |
 
 - **In-menu search** — type to filter, matched substrings light up in the accent color; `↑↓` to move, `Enter` to open, `Esc` to close.
-- **`Alt+1..9`** — jump to the Nth *visible* item (folded or filtered ones are skipped).
+- **Pinyin search (v1.5)** — besides typing Chinese, type **pinyin initials** (`mbsn` → 面板收纳), **full pinyin** (`mianban` → 面板) or a **fuzzy subsequence** (`dpp` → dsh-panel-pins). The complete GB2312 common-hanzi table ships inside the plugin; matching is computed locally, never over the network.
+- **Relevance ranking (v1.5)** — while searching, the closest match moves to the **first row of its group** (exact > prefix > initials > substring > fuzzy). Clearing the box restores the original order.
+- **`Alt+1..9`** — jump to the Nth *visible* item (folded or filtered ones are skipped). After a search, `Alt+1` is the best hit.
 - **Fold memory** — per-group folding survives re-opens and restarts.
 - **Hover actions** — pin / unpin / to-top on any row.
 
 ### 2. The `Ctrl+K` palette
 
 The same inventory plus quick commands (collect rows, collect plugin entries, icon-only, compact footer, open Settings). Centered, keyboard-first, and it **never hijacks a focused host input**.
+
+Since v1.5 `Ctrl+K` is registered with the host's shortcut service (`ctx.shortcuts`): rebind it under *Settings → Shortcuts*, and let the host detect conflicts. The host decides whether the key may fire (focused input, open modal) instead of the plugin guessing. On older hosts without the service — or when the host already owns `Ctrl+K` — the plugin falls back to its own listener and nothing is lost. On macOS the key is `⌘K`, matching the host's other shortcuts.
 
 ### 3. Sidebar management
 
@@ -196,7 +214,9 @@ dsh plugin --profile <your-profile> add dsh-panel-pins
 
 Or in the DeepSeek Harness desktop app: **Settings → Plugins**, search the marketplace. **Restart the app once** afterwards (the sidebar module is built at startup).
 
-> **Single package name**: only the bare name `dsh-panel-pins` is published. The old `@qdnbd/dsh-panel-pins` is frozen at 1.2.1 — reinstall the bare package from the marketplace to migrate, and carry your config over with export / import.
+> **Single package name**: only the bare name `dsh-panel-pins` is published. The old `@qdnbd/dsh-panel-pins` is frozen at 1.2.1 and **will not be updated**.
+>
+> If you installed the scoped name you are running 1.2.1, which has **no** settings-page bridging, no layout presets, no export/import and no drag-to-reorder. Install the bare package (`dsh plugin --profile <your profile> add dsh-panel-pins`) and move your configuration across with *Export / Import* in the old settings page — both package names share the same `dsh-panel-pins:` localStorage prefix, so the import lands as-is.
 
 ## Configuration
 
@@ -232,15 +252,18 @@ All state lives under the `dsh-panel-pins:` prefix in `localStorage` and survive
 
 ## Which one?
 
-All four work on the same sidebar with different aims. **Enable only one at a time** — they manipulate the same rows and will fight each other.
+All eleven work on the same sidebar with different aims. **Enable only one at a time** — they manipulate the same rows and will fight each other.
 
 | If your priority is… | Pick |
 | --- | --- |
 | A tangle of sidebar rows; want one entry for everything + keyboard | **this plugin** |
-| Just tidy the rows, mouse is fine | either this or panellist; this one adds search and a palette |
+| Just tidy the rows, mouse is fine | this plugin / panellist / panel-tidy; this one adds search and a palette |
 | A "button rows, 1–3 lines" grid look | panel-layout |
+| Moving the panel rows into the Windows title bar to reclaim vertical space | panel-titlebar |
+| Keep only three rows, everything else in *More*, minimal config | panel-compact |
 | Automatic grouping by an AI model | panel-control |
 | A custom icon per panel | panellist |
+| Touch-first, long-press to drag | panel-tidy |
 
 ## Troubleshooting
 
@@ -254,6 +277,7 @@ All four work on the same sidebar with different aims. **Enable only one at a ti
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.5.0** — three things: `Ctrl+K` moves into the host's shortcut service (rebindable under *Settings → Shortcuts*, conflicts visible, the host arbitrates inputs and modals); search understands pinyin initials, full pinyin and fuzzy subsequences and ranks hits by relevance; third-party plugins that ship only a **main panel** join the launcher's *Main panels* group
 - **1.4.8** — fix the capped panel list still not wheel-scrolling on rc.5 (v1.4.4's driver-free cap): the lite driver absorbs only list-capable steps and passes boundary steps through untouched; v1.4.7's truncated stylesheet (a duplicated selector line silently dropped every rule after it) is reverted — the stylesheet is byte-identical to 1.4.4 again
 - **1.4.7** — bring back the capped panel list on rc.5 (user request): a lite wheel driver absorbs only list-capable steps and passes every list-boundary step through to the host hand-off untouched — list and workspace alive together for the first time
 - **1.4.6** — the plugin steps aside from the scroll layer on rc.5: no panel-list cap, no wheel handling (the host hand-off replaces what the cap was for; any plugin scroll handling broke one of the two regions)
