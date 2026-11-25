@@ -12,7 +12,17 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-22，已发布 v1.4.3）
+## 当前状态（2026-11-25，v1.4.4 待 publish）
+
+| 项 | 值 |
+| --- | --- |
+| GitHub | tag v1.4.4 已推（https 通道 + gh token，ssh fake-ip 被掐）✓；Release 页 https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.4.4 ✓ |
+| **本次待发** | **v1.4.4（b90）**——rc.5 侧栏滚动契约修复：b79/b83 结构覆盖与 b81 滚轮劫持改由 `html.dpp-rc3` 门控（`detectScrollContract()` 按 `_scrollArea` 是否带 `data-sidebar-scrollport` 分类 rc5/rc3/null）。回归：b90 套件 16/16、b84 26/26、b86 41/41（b85 的 3 失败为测试陈旧断言，HEAD A/B 一致）。node --check ✓。本机桌面端已装 file:tgz 1.4.4 并经用户重启验证 ✓ |
+| 状态 | **等待用户在本人终端执行 publish**（浏览器 OTP） |
+| 发布命令 | 仓库根 `npm publish --access public --registry https://registry.npmjs.org`（单发布）— **每次 publish 都需人工浏览器 OTP**（EOTP 待用户完成，非交互终端只能拿到掩码 URL） |
+| 发布后动作 | ① registry 核验 `npm view dsh-panel-pins version --registry https://registry.npmjs.org`（CDN 约 3 分钟延迟）；② 本机 profile 依赖从 file:.dist tgz 切到 registry `^1.4.4`（pack.ps1 5a2 反向：改 profile package.json 依赖 + pnpm 重算 lockfile）；③ 更新本表为已发布 |
+
+## 历史状态（2026-11-22，已发布 v1.4.3）
 
 | 项 | 值 |
 | --- | --- |
