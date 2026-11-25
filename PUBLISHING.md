@@ -12,7 +12,17 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-25，已发布 v1.4.4）
+## 当前状态（2026-11-25，v1.4.8 本机 tgz 已装，待用户验证；npm 未发布）
+
+| 项 | 值 |
+| --- | --- |
+| 本次修复 | **v1.4.8（b94）** rc.5 限高列表滚轮失效（用户报告：工作区可以滑动、列表滑动不了；1.4.5–1.4.7 三版都未修好）。根因有二：① 1.4.4 起 rc.5 免驱动限高——宿主手令视口处理器 preventDefault 所有导航区滚轮事件，列表自身永远滚不了；② **1.4.7 致命样式表事故**——EXTRA_CSS 中 `html.dpp-rc3 [class$="_regionArea"] {` 被意外复制两遍，声明块内的裸选择器是坏声明，按 CSS 规范其残余消费会吞到下一个顶层 `;`（本样式表没有），**其后全部规则被静默丢弃**（滚动条主题/tidy 底部/icon-only/.dpp-launcher/弹层全灭）。 |
+| 修复方式 | 以 v1.4.4 为基底（用户已验证工作区正常）+ 移植 1.4.7 的 LITE 驱动（列表可吸收步 preventDefault + 驱动列表；边界步原样放行给宿主手令；不 stopPropagation、不代写 viewport——1.4.5 弄坏工作区的两件事）。**EXTRA_CSS 保持 1.4.4 逐字节一致**（node 比对验证）。回归：b90 套件更新至 b94 契约 29/29（新增：无连续重复选择器行、launcher/overlay 样式未被截断）、b84 26/26、b86 41/41。 |
+| 本机安装 | ✓ pack.ps1 全绿：tgz `D:\code\.dist\local-dsh-panel-pins-1.4.8.tgz`（100 KB）→ profile 三处（package.json / pnpm-lock.yaml / .modules.yaml）指向 1.4.8；安装副本 BUILD=b94，SRC==INST SHA256 一致；备份 `.bak-dpp`。`node_modules/.pnpm/lock.yaml`（虚拟存储派生副本）仍为 1.4.4 旧态——今晨 registry 切换前即已陈旧，pnpm 重铺时自动重建，未处理。 |
+| 待办 | ① 用户重启桌面端验证：列表可滚 + 工作区可滚；② 验证通过后 `npm publish --access public --registry https://registry.npmjs.org`（**需人工浏览器 OTP**）+ GitHub tag/Release；③ 本表切「已发布」。 |
+| 收录 PR | 暂无需更新（bugfix 不改收录描述） |
+
+## 历史状态（2026-11-25，已发布 v1.4.4）
 
 | 项 | 值 |
 | --- | --- |

@@ -42,6 +42,7 @@
 
 ## 已知坑
 
+- **EXTRA_CSS 数组手改后必须跑 b90 套件 D 段**（1.4.7 事故）：声明块内混入裸选择器行（哪怕只是复制粘贴重复一行）= 坏声明，残余消费会吞掉其后**整段样式表**（无顶层 `;` 可停）；jsdom/`node --check` 都发现不了，只有 D 段的「无连续重复选择器行 + 末尾样式仍在」守卫能拦住。
 - Bash 工具 cwd 跨调用不稳定：回归测试用绝对路径 `node D:/code/.tmp-dpp-test/test.js`。
 - 回归测试沙箱在 `D:\code\.tmp-dpp-test\`（jsdom + stub React），测试两次踩过的自坑：文案断言别依赖容器语言；断言里 `[...querySelectorAll]` 拿到的是元素不是字符串。
 - 新版 Chromium 设置 `scrollbar-width` 标准属性会**禁用** `::-webkit-scrollbar` 伪元素样式——统一走 webkit 伪元素，别混。
@@ -79,6 +80,15 @@
 - 对账纪律：只做增删（绝不重注册未变化的行，避免交互中重挂载）；120ms 去抖；`settings.section` 订阅**可重试**（声明前 subscribe 观察不到任何东西）；启动重扫 `[350, 900, 2000, 4200, 8000, 15000]ms`；每个 `slots.register` try/catch + 成对回滚——**register 抛错泄漏进 loader.start() 会中止整个启动**（文档化事故）。
 - 开关：`dsh-panel-pins:bridge`（默认开）+ 设置卡 switchRow；关闭即成对撤回，若正停在该页先 `selectPanel(null)`（选中不存在的 key = 空列死屏）。dispose 事件清理全部配对 + 订阅 + 定时器。
 - 回归：`test-b86-bridge.js`（42 断言：识别启发式全套、顶层字段透传、成对注册/回滚、开关撤回与安全着陆、overlay 组渲染与点击选中、晚注册订阅、dispose 清理、无 layout 降级）；测试钩子 `window.__dppBridge`。
+
+## v1.4.8（b94）rc.5 限高列表滚轮修复 + 1.4.7 样式表截断事故回退（2026-11-25）
+
+- **用户报告**：桌面端回退到 1.4.4——工作区可以滑动、列表滑动不了；1.4.5–1.4.7 三版都没修好。
+- **根因①（1.4.4 的固有缺陷）**：rc.5 免驱动限高只是错觉——宿主手令视口处理器（`scroll-handoff.ts`）对导航区所有可取消滚轮事件 preventDefault 后只驱动视口，列表 `overflow-y:auto` 的原生滚动永远不会发生。
+- **根因②（1.4.7 的致命事故）**：EXTRA_CSS 里 `html.dpp-rc3 [class$="_regionArea"] {` 被复制两遍。声明块内出现裸选择器 = 坏声明，CSS 解析器的「消费坏声明残余」会吞掉平衡块直到下一个顶层 `;` 或 EOF——本样式表全是 `selector { }` 规则、没有顶层分号，**其后所有规则被静默丢弃**（滚动条主题、tidy 底部限高、icon-only、.dpp-launcher、弹层全灭）。1.4.7 的「还是不行」大概率由此目视即判死刑。
+- **修复**：以 v1.4.4 为基底 + `installNavWheelLite`（列表可吸收步 preventDefault + 驱动列表；边界步原样放行；不 stopPropagation、不代写 viewport）。监听次序安全：插件 capture 在 nav（先发），宿主 bubble 在视口祖先（后发）且 `event.defaultPrevented` 早退。EXTRA_CSS 与 1.4.4 **逐字节一致**（node 比对）。新增 `RC5_CLASS`（仅作 ensureLauncher 驱动分派门，无 CSS 挂其上）。
+- **回归**：b90 套件更新至 b94 契约 29/29——A 段 LITE 驱动（吸收/边界放行/不写视口）、B 段 rc3 劫持、C 段 legacy、D 段改回不门控 cap + **两条截断守卫**（无连续重复选择器行；launcher/overlay 样式仍在=样式表未被截断）；b84 26/26、b86 41/41 不变。
+- **本机**：pack.ps1 全绿，profile 三处 → `local-dsh-panel-pins-1.4.8.tgz`，SRC==INST（SHA256 一致），BUILD=b94。`.pnpm/lock.yaml` 虚拟存储副本仍 1.4.4 旧态（今晨 registry 切换前已陈旧，重铺自动重建，不处理）。npm/GitHub 未发布，待用户重启验证后走 OTP publish。
 
 ## v1.4.4（b90）rc.5 滚动手令契约修复（2026-11-24）
 

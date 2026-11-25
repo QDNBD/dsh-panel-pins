@@ -244,6 +244,7 @@ All four work on the same sidebar with different aims. **Enable only one at a ti
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.4.8** — fix the capped panel list still not wheel-scrolling on rc.5 (v1.4.4's driver-free cap): the lite driver absorbs only list-capable steps and passes boundary steps through untouched; v1.4.7's truncated stylesheet (a duplicated selector line silently dropped every rule after it) is reverted — the stylesheet is byte-identical to 1.4.4 again
 - **1.4.7** — bring back the capped panel list on rc.5 (user request): a lite wheel driver absorbs only list-capable steps and passes every list-boundary step through to the host hand-off untouched — list and workspace alive together for the first time
 - **1.4.6** — the plugin steps aside from the scroll layer on rc.5: no panel-list cap, no wheel handling (the host hand-off replaces what the cap was for; any plugin scroll handling broke one of the two regions)
 - **1.4.5** — fix the capped panel list itself refusing to scroll (the rc.5 viewport handler swallowed every wheel event; a chained driver now mirrors the host hand-off: list first, remainder spills to the viewport)
