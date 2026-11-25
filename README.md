@@ -34,6 +34,16 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
   <a href="assets/screenshot-settings.png"><img src="assets/screenshot-settings.png" width="49%" alt="Settings page"></a>
 </p>
 
+## ✨ Highlights
+
+- **🖱️ Drag anything, anywhere** — grab any panel or plugin row and drop it where it belongs; a **blue insertion line** marks the exact landing spot. Works right in the sidebar *and* in the pinned manager, with a right-click *Move to front* fallback for touch/keyboard users. One click restores the host's default order.
+- **⌨️ Any panel in two keystrokes** — a global `Ctrl+K` palette with instant search and hit highlighting, `Alt+1..9` direct jumps, and a Recent group that keeps your high-frequency panels on top. The sidebar becomes optional.
+- **✏️ Make every row yours** — right-click to hide a row, rename it with a floating editor anchored under the row, pin it, or push it to the top. Display-only, survives restarts and language switches.
+- **💾 Named layout presets** — pins, folds, icon-only and the compact footer snapshot into one preset; flip "work" ↔ "play" in one click from the palette.
+- **🧲 Nothing is unreachable** — even third-party plugins that only registered a Settings page get their full page as a row in the menu.
+- **🧊 A sidebar that stays slim** — icon-only mode (18px glyph column) plus a compact footer with four independent height caps, so the session list never gets squeezed to a slit again.
+- **🛡️ Zero risk, zero residue** — display layer only, no DOM surgery, host re-render-proof; uninstall and the sidebar is pixel-identical to before. Light / dark / wallpaper themes all work.
+
 ## What it fixes
 
 | Where you are now | Where you land |
