@@ -12,18 +12,18 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-26，**v1.6.0 待发布**，npm 上仍是 v1.4.8）
+## 当前状态（2026-11-26，**v1.6.1 待发布**，npm 上仍是 v1.4.8）
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | `dsh-panel-pins@1.4.8`（latest，已发布）。**v1.5.0 与 v1.6.0 均未 publish**——按用户要求暂缓，等本机验证通过后一并执行 |
-| 待发布内容 | **v1.6.0（b96）** 三件事：① 宿主**右栏标签页类型**进入启动器「右栏标签页」分组（只列「页类型」——资源类型按地址打开，按名字打开会挂上抛异常的坏标签页）；② **界面语言跟随宿主语言设置**（8 种语言、应用内可切），不再靠 `navigator.language` 猜；③ **主题实时跟随宿主**（订阅 `theme/change`，旧实现盯的是宿主根本不碰的 `<html>` class，切主题最长滞后 5 秒） |
-| 上一版 | **v1.5.0（b95）**：`Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
-| 回归 | b96 新套件 33/33（宿主主题服务/事件/DOM 属性三路径 + **「宿主 presenter 信号压过说谎的 theme 服务」**、语言跟随与双通道、右栏页类型筛选与点击打开）+ b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **199 项全绿**；另在**真实桌面端**用 CDP 端到端复验（v1.6.0 已加载 / 右栏标签页 12 项 / 拼音命中 / 宿主语言与主题实时切换均生效） |
+| npm 主包 | `dsh-panel-pins@1.4.8`（latest，已发布）。**v1.5.0 / v1.6.0 / v1.6.1 均未 publish**——按用户要求暂缓，等本机验证通过后一并执行 |
+| 待发布内容 | **v1.6.1（b97）** 一件事：侧栏「**新会话**」按钮的文字回到正中。根因是本插件样式表用**前缀匹配**宿主哈希类名（`[class*="_newSession"]`），一次命中 6 个元素（行、按钮、按钮内部的标签遮罩/内容/标签），多出来的 8px 下边距把 flex 居中的「+ 新会话」文字顶到按钮垂直中心上方 8px，按钮下半截空出一大块。现在间距只作用在**行**上（`[class*="_newSessionRow"]`）。真机实测：样式表开时文字中心 107 / 按钮中心 115（偏上 8px），关掉后 111 / 111（偏差 0），修复后偏差 0 |
+| 上一版 | **v1.6.0（b96）** 三件事：宿主**右栏标签页类型**进入启动器「右栏标签页」分组（只列「页类型」——资源类型按地址打开，按名字打开会挂上抛异常的坏标签页）；**界面语言跟随宿主语言设置**（8 种语言、应用内可切），不再靠 `navigator.language` 猜；**主题实时跟随宿主**（订阅 `theme/change`，旧实现盯的是宿主根本不碰的 `<html>` class，切主题最长滞后 5 秒） |
+| 回归 | 全套 **199 项全绿**（b96 33 / b95 快捷键 25 / b95 拼音 16 / b84 26 / b85 29 / b86 41 / b90 29）；另在**真实桌面端**端到端复验：v1.6.1 已加载、按钮内壁与文字墨迹中心偏差 0（`PrintWindow` 抓窗口像素，CDP 端口未起时的兜底手段） |
 | 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新增的 `locale` / `theme` / `sidebarRightTabs` / `sidebarRight` 全部走 `optionalService()`，**未写进 `inject`**，旧宿主上自动降级（无 locale 服务则按浏览器语言、无 theme 服务则读宿主 DOM 属性、无右栏服务则不出组） |
-| GitHub | ✅ v1.5.0：commit `f90f0d8` + annotated tag + Release 页（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0）；⏳ **v1.6.0**：commit `e222e30`（功能）→ `556c1ed`（主题判定修正）→ `f20531f`（pack.ps1 双锁文件同步），annotated tag **v1.6.0** 指向 `f20531f`，Release 页已建并已按真机复验结果更新正文（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.6.0） |
+| GitHub | ✅ v1.5.0：commit `f90f0d8` + annotated tag + Release 页（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0）；✅ v1.6.0：commit `e222e30` → `556c1ed` → `f20531f`，annotated tag **v1.6.0** 指向 `f20531f`，Release 页已建（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.6.0）；✅ **v1.6.1**：commit `a045400`，annotated tag **v1.6.1** 指向 `a045400`，Release 页已建（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.6.1） |
 | npm | ⏸️ **按用户要求暂不 publish**（2026-11-26）：npm 上 latest 仍是 `1.4.8`，GitHub Release 已先行就位——两者会在执行 publish 后对齐 |
-| 本机切换 | ✅ 已装 **本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`）；⏳ **v1.6.0 待重新打包安装**（`scripts\pack.ps1`），之后才切回 registry |
+| 本机切换 | ✅ 已装 **本地 1.6.1**（`file:D:/code/.dist/local-dsh-panel-pins-1.6.1.tgz`），`scripts\pack.ps1` 装完 `SRC == INST`（SHA256 一致）；待 publish 后切回 registry `^1.6.1` |
 | 旧 scoped 包 | ✅ **2026-11-25 已废弃全部 9 个版本**（含 latest=1.2.1），文案指向裸名包；`latest` 保留仍可装，只打 warning。见下方「2026-11-25 分发动作 ①」 |
 | 收录 PR | 待更新：补 `pinyin` / `shortcut` / `main-panel` / `right-sidebar` / `locale` 关键词（见下方「2026-11-25 分发动作」②） |
 
