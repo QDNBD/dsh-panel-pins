@@ -20,7 +20,8 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 待发布内容 | **v1.5.0（b95）** 三件事：① `Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；② 搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；③ 只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
 | 回归 | b95 新套件 25/25（宿主快捷键注册/解析器语义/拒绝注册回退/主面板组/拼音搜索）+ b95 拼音纯函数 16/16 + b84 26/26 + b86 41/41 + b85 29/29（顺手修好该套件写死的 `v1.4.0`/`b86` 陈旧断言，改成从 package.json 与源码动态读取）+ b90 滚动契约 29/29 |
 | 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新能力在无 `shortcuts` 服务的宿主上自动降级，不影响 0.2.0/0.2.1 线 |
-| GitHub | ✅ commit `f90f0d8` 已推 `origin/main`；✅ annotated tag **v1.5.0** 已推（tag 对象 `85c6043` → deref `f90f0d8`，与 HEAD 一致）；Release 页待建 |
+| GitHub | ✅ commit `f90f0d8` 已推 `origin/main`；✅ annotated tag **v1.5.0** 已推（tag 对象 `85c6043` → deref `f90f0d8`，与 HEAD 一致）；✅ **Release 页已建**：https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0 （正式版，非 draft / 非 prerelease，标记为 Latest；说明源文件归档在 `publishing/release-notes-v1.5.0.md`） |
+| npm | ⏸️ **按用户要求暂不 publish**（2026-11-26）：npm 上 latest 仍是 `1.4.8`，GitHub Release 已先行就位——两者会在执行 publish 后对齐 |
 | 本机切换 | ✅ **已切到本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`）；tarball 内 `lib/client.js` / `README.md` 与仓库 HEAD **SHA256 逐一相等**（`5BF66D38…`），即「本机验证的那份」==「将要 publish 的那份」；**待 1.5.0 发布后**再切回 registry `^1.5.0` |
 | 旧 scoped 包 | ✅ **2026-11-25 已废弃全部 9 个版本**（含 latest=1.2.1），文案指向裸名包；`latest` 保留仍可装，只打 warning。见下方「2026-11-25 分发动作 ①」 |
 | 收录 PR | 待更新：补 `pinyin` / `shortcut` / `main-panel` 关键词（见下方「2026-11-25 分发动作」②） |
