@@ -160,13 +160,23 @@ try {
     }
 
     # 5b. pnpm-lock.yaml: version strings + integrity, BLOCK-SCOPED.
+    # TWO lockfiles matter:
+    #   <profile>/pnpm-lock.yaml            — the declared lockfile
+    #   <profile>/node_modules/.pnpm/lock.yaml — pnpm's CURRENT-state lockfile,
+    #     which is what `pnpm list` (and therefore `dsh plugin list`) reads.
+    #     Leaving it stale makes the host and the user believe the OLD build
+    #     is installed even though the files on disk are new (2026-11-26:
+    #     1.6.0 installed, but `dsh plugin list` reported 1.5.0).
     $lock = Join-Path $Profile 'pnpm-lock.yaml'
+    $currentLock = Join-Path $Profile 'node_modules\.pnpm\lock.yaml'
     $openMarker = '  ' + $PluginName + '@file:'
     $tarballToken = 'local-' + $PluginName + '-'
-    $lines = [IO.File]::ReadAllLines($lock)
-    $inBlock = $false
-    $changed = $false
-    for ($i = 0; $i -lt $lines.Count; $i++) {
+    foreach ($lockFile in @($lock, $currentLock)) {
+      if (-not (Test-Path $lockFile)) { continue }
+      $lines = [IO.File]::ReadAllLines($lockFile)
+      $inBlock = $false
+      $changed = $false
+      for ($i = 0; $i -lt $lines.Count; $i++) {
         if ($lines[$i] -match [regex]::Escape($tarballToken) -and $lines[$i] -notmatch [regex]::Escape($version)) {
             $lines[$i] = $lines[$i] -replace ($tarballToken + '[\d\.]+\.tgz'), ("$tarballToken$version.tgz")
             $changed = $true
@@ -179,13 +189,26 @@ try {
                 $changed = $true
             }
         }
-    }
-    if ($changed) {
-        Copy-Item $lock "$lock.bak-dpp" -Force
-        [IO.File]::WriteAllLines($lock, $lines)
-        Write-Host "[5b] pnpm-lock.yaml synced (version + integrity; backup: .bak-dpp)"
-    } else {
-        Write-Host "[5b] pnpm-lock.yaml already current"
+        # The package entry ALSO carries its own `version:` field — file:
+        # entries do, registry entries keep the version in the key instead.
+        # Leaving it stale makes `pnpm list` report the OLD version; the
+        # tarball path and the integrity above are not enough, pnpm reads
+        # this field.
+        if ($inBlock -and $lines[$i] -match '^\s+version: \d+\.\d+\.\d+\s*$') {
+            $expected = $lines[$i] -replace '\d+\.\d+\.\d+', $version
+            if ($expected -ne $lines[$i]) {
+                $lines[$i] = $expected
+                $changed = $true
+            }
+        }
+      }
+      if ($changed) {
+        Copy-Item $lockFile "$lockFile.bak-dpp" -Force
+        [IO.File]::WriteAllLines($lockFile, $lines)
+        Write-Host "[5b] $(Split-Path -Leaf $lockFile) synced (version + integrity; backup: .bak-dpp)"
+      } else {
+        Write-Host "[5b] $(Split-Path -Leaf $lockFile) already current"
+      }
     }
 
     # ---- 5c. .modules.yaml @file: pointer ------------------------------------
