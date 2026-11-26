@@ -219,7 +219,7 @@ npm registry `latest` + api.npmjs.org（周：11-15 ~ 11-21；月：10-23 ~ 11-2
 | --- | --- | --- |
 | P0-1 | `Ctrl+K` 注册进宿主 `ctx.shortcuts`（`settings.shortcuts` 可改键/看冲突；宿主负责 editable/terminal/modal 仲裁；服务不存在或键位被占时回退插件自己的监听） | ✅ v1.5.0（b95）交付，b95 套件 25/25 |
 | P0-2 | 拼音首字母 + 全拼 + 模糊匹配 + 组内相关度排序（内置完整 GB2312 6763 字表，纯本地零外发） | ✅ v1.5.0（b95）交付，纯函数套件 16/16 |
-| P0-3 | 主面板入口：枚举根级 `main` 槽（宿主 `ui-layout` 同款公开调用），`layout.selectPanel(key)` 打开 | ✅ v1.5.0（b95）交付（**右侧栏标签页不做**：宿主无公共打开 API，做出来是点不动的死行） |
+| P0-3 | 主面板入口：枚举根级 `main` 槽（宿主 `ui-layout` 同款公开调用），`layout.selectPanel(key)` 打开 | ✅ v1.5.0（b95）交付。⚠️ **本行括注「右侧栏标签页不做」是错的，已于第九节更正**——宿主确有公开打开 API（`ctx.sidebarRight.openTab(kind)` / `ctx.sidebarRightTabs.register` / `ctx.slots.register({name:'sidebar.right.pane.tab'})`），上一轮搜的是错的名字（`openGuide` 0 命中 ≠ 无此能力）。详见 [第九节](#九2026-11-26-候选机会盘点宿主-022-rc5-深挖) 与 [OPPORTUNITIES.md](OPPORTUNITIES.md) |
 | 分发① | 旧 scoped 包迁移提示 | 🟡 **根因已定位**：scoped 包 9 个版本里 8 个已废弃，唯独 `latest`=1.2.1 没标 → `npm install @qdnbd/dsh-panel-pins` 毫无警告地装上冻结版（~30/天 ≈ 900/月，占一半安装量）。修复 = **一条 `npm deprecate` 命令**（免发版、可撤销；写操作要 OTP，用户自己终端跑一次）+ npm 网页端换 README（免 OTP）。已写入 PUBLISHING.md；市场目录与收录条目均已确认干净 |
 | 分发② | README 对照表扩到 11 家 + 如实列 titlebar/compact/tidy | ✅ 中英双语完成（对照表、亮点、为什么选它、怎么选、更新日志同步） |
 | P1-4 | 本地启发式自动分组（零外发，对位 control 的模型分类） | ⏳ 未做——**建议观察**：control 的 AI 分类要发模型服务商才有效，本地规则版预期收益有限，等用户反馈再排 |
@@ -228,3 +228,42 @@ npm registry `latest` + api.npmjs.org（周：11-15 ~ 11-21；月：10-23 ~ 11-2
 | P3-12/13 | client.js 模块化拆分、滚动契约收敛 | ⏳ 未做——**client.js 因拼音字表涨到 397KB / 8675 行**，模块化必要性比调研时更强，建议尽快排 |
 
 > **新增风险提示**：v1.5.0 的字表让 `lib/client.js` 从 337KB 涨到 397KB（+41KB 字表 + ~18KB 代码）。浏览器端首屏解析成本可忽略，但**这个文件已不适合再往里塞大块常量**——后续模块化拆分（P3-12）应把字表与匹配器拆成独立文件或惰性加载。
+
+---
+
+## 九、2026-11-26 候选机会盘点（宿主 0.2.2-rc.5 深挖）
+
+> 完整方案、逐条证据行号与「已验证/未验证」标注见 **[OPPORTUNITIES.md](OPPORTUNITIES.md)**。本节只给结论表。
+> 方法：宿主 asar 完整解包（209MB）→ 逐字读 TS 源码与包 README 契约 + 自家 `lib/client.js` 逐段读 + npm registry / api.npmjs.org 实测，三线交叉验证。
+
+### ⚠️ 先更正上一轮的一个错误结论
+
+第八节写「**右侧栏标签页不做**：宿主 `openGuide` 0 命中，没有公开的打开 API」——**这个结论是错的，搜错了 API 名**。
+宿主确有公开的「注册 + 枚举 + 打开」三件套：`ctx.sidebarRightTabs.register({ id, kind, title, … })` / `ctx.slots.register({ name:'sidebar.right.pane.tab', key: definition.id }, Body)` / `ctx.sidebarRight.openTab(kind)`（`dsh-client-ui-sidebar-right/README.md:83-86`、`service.ts:250/390`、`tab-registry.ts:321`）。宿主 README 明写「the shipped guide type goes through exactly the same public path a type from another package does」。**第八节的 P0-3 恢复为候选，且是本轮最高价值的一条。**
+
+### 分层结论
+
+| 层 | # | 候选 | 一句话证据 | 难度 |
+| :-: | :-: | --- | --- | :-: |
+| **P0** | 1 | **右栏标签页纳入面板清单** | `ctx.sidebarRight.openTab(kind)` 是公开 API；枚举走 `sidebarRightTabs.entries()` | 中 |
+| | 2 | **宿主原生 Pin 与插件持久化 Pin 双源收敛** | 宿主 entry-customization 已进浏览器名单（`dsh-web-app/cordis.patch.yml:460`）+ 宿主 pin 纯内存（`panel-pins.ts`）vs 我们 `client.js:954-963` 推回 | 中 |
+| | 3 | **接入 `ctx.locale`，语言跟随宿主** | 宿主 8 语言 + 应用内语言设置；我们 `client.js:481-486` 只认 `navigator.language` 且只求值一次 | 中 |
+| | 4 | **主题判定改用宿主 `ctx.theme`** | 宿主运行期改 `<html>.style` / `data-ds-theme-source` / `<body>[data-ds-dark-theme]`（`dsh-client-ui-layout/src/client/theme-presenter.ts:69-76`），我们只观察 `<html>` 的 `class`（`client.js:8477-8481`）→ 观察器**根本不会触发**，最长 5s 滞后 | 低 |
+| **P1** | 5 | 面板清单进宿主 `/` 命令菜单（`ctx.commandUi`） | `commands/contract.ts:135-149`；宿主 0 家同类 | 中 |
+| | 6 | 拖拽升级为指针事件 + 长按（触屏） | 我们纯 HTML5 DnD（`client.js:6944-7056`）→ 触屏不能拖；tidy 用指针事件 | 中 |
+| | 7 | 无障碍补齐（`role="menu"` / `aria-activedescendant` / roving tabindex） | overlay 容器 `dpp-ov-body` 无 role 而子项有 `menuitem`（`client.js:4736/5479`）；高亮仅 CSS class（`:5395-5410`） | 低 |
+| | 8 | 原生右键菜单 `ctx.contextMenus` | `context-menu/src/client/registry.ts`；宿主用法 `sidebar-right/src/client/index.ts:141-158` | 中 |
+| | 9 | `sidebar.toggle.badge` 侧栏收起态徽标 | `sidebar/README.md:50,56` | 低 |
+| | 10 | toast 换宿主 token | 我们用 `--dsw-menu-surface-fill`（`client.js:2930-2944`）vs 宿主 `--dsw-alias-toast-bg` | 低 |
+| **P2** | 11-16 | 宿主 Pin 全量接管 / 本地自动分组 / 布局切换 / 标题栏模式 / 自定义触发源 / 模块化拆分 | 均写明触发条件，见 OPPORTUNITIES.md 第四节 | — |
+
+### 竞品格局复核（2026-11-26 实测）
+
+- 下载量与第八节**逐格相同**（api.npmjs.org `last-week` 窗口仍是 **2026-11-18 ~ 11-24**，即最新完整周；上次调研同在 11-25，窗口相同）。本插件仍以 826/周居「面板整理」档第一。
+- **12 个竞品的版本号与 `time.modified` 全部未变**（control 0.10.7/11-25、layout 0.2.5/11-17、tidy 0.2.1/11-14、titlebar 0.3.4/11-06 …）→ **两周零动作，无新对手入场，也无人补上我们 v1.5.0 的三件套**。
+- `npm view dsh-panel-pins version` = **1.4.8**（v1.5.0 未发布，与 PUBLISHING.md 一致）。
+- **反向结论**：这一档不是靠功能数量赢的（control 靠发版频率、layout 靠范式、titlebar 靠 Windows 专属），**且竞品全都没接宿主契约**（他们基本只做 DOM 层整理）——所以本轮不建议追 AI 分类 / 布局切换，**真正的缺口在宿主契约（H1/H2/H4/H5）与自家实现质量（U1/U2/U3/U4）**。
+
+### 本轮没做的事
+
+未执行任何 npm 写操作（无 publish/deprecate）；未改 `lib/client.js` 实现；未动 `engines.dsh`；未新增运行时依赖；未把任何新服务写进 `inject`。解包产物在 `D:\code\.tmp-dpp-test\asar-extract\`，未污染源码仓。
