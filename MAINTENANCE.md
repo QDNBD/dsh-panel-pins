@@ -102,6 +102,42 @@
 - **DOM 推导出来的结果不能缓存**：宿主切回亮色时是**移除** `data-ds-dark-theme`，缓存会把弹层留在暗色。所以只有**服务/事件**的答案进 `hostColorScheme`，DOM 每次实时读。
 - 影响面有限：`html.dpp-dark` 只用于弹层不透明底色（不是主题失效），属抛光级缺陷——但改动只有几行，顺手做掉。
 
+#### ③-1 真机复验发现：主题信号的优先级（v1.6.0 补丁）
+
+在**真机**（DSH 0.2.2-rc.5 桌面端 + 装了「外观定制」插件的环境）做了一次真实换肤，发现 v1.6.0 初版的主题判定是错的：
+
+| 信号 | 宿主切到深色时的值 | 是否可信 |
+| --- | --- | --- |
+| `theme.getTheme().active.colorScheme` | **`light`**（第三方主题 `custom-color` 的 colorScheme 是 light） | ❌ 与实际调色板不符 |
+| `getComputedStyle(document.body).colorScheme` | **`light`**（body 有自己的 `color-scheme` 声明，不继承） | ❌ 永远是 light |
+| `document.documentElement.style.colorScheme` | `dark`（宿主 presenter 写的解析结果） | ✅ |
+| `<html>[data-ds-theme-source]` | `dark` | ✅ |
+
+初版把 **service 的值缓存成权威**（`hostColorScheme`），于是它挡住了 DOM 兜底——宿主已经暗了，插件还亮着。修正后的优先级：
+
+1. **宿主 presenter 写下的解析结果**（`<html>.style.colorScheme` → `getComputedStyle(<html>).colorScheme` → DOM 属性），**每次实时读、不缓存**；
+2. 主题服务（降级为兜底——第三方自定义主题可能与实际调色板不符）；
+3. `<html>` 的 computed color-scheme；
+4. body 背景亮度。
+
+**教训**：`ctx.theme` 的 `active.colorScheme` 描述的是「当前生效的主题**定义**」，**不等于「屏幕上是什么颜色」**——第三方主题可以注册一个 colorScheme 与用户偏好不符的 theme id。判断"是不是暗色"必须读宿主 presenter 写下来的**解析结果**。
+
+**另一个坑**：`<body>` 的 `color-scheme` **不继承**（body 上有独立声明），读 body 永远得到 light——必须读 `<html>`。
+
+#### ③-2 真机复验方法（可复用）
+
+桌面端是 Electron，**用 `--remote-debugging-port` 重启即可用 CDP 在真实渲染进程里求值**：
+
+```powershell
+Get-Process 'DeepSeek Harness' | Stop-Process -Force; Start-Sleep 6
+Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--remote-debugging-port=9222'
+# → http://127.0.0.1:9222/json/list 拿 webSocketDebuggerUrl，Runtime.evaluate 即可
+```
+
+- 宿主自己的设置入口：侧栏底部「**账号菜单**」→「设置 Ctrl+,」→ 左侧导航；**外观**（浅色/深色/跟随系统）在「通用设置」里，控件是 `button.Iwzhua_themeCube`；**语言**在「通用设置」的 `button.CDP_Dq_selector`。
+- `Emulation.setEmulatedMedia` 能改 `prefers-color-scheme`（`matchMedia` 会变、MQL change 事件会触发），但**宿主不会因此换肤**——它的主题偏好是显式值不是 system，媒体查询监听器会主动 return。**要换肤必须走宿主的设置 UI**。
+- 往**装在盘上那份** `lib/client.js` 注入探针（不动源码仓）再重启，能直接读到插件内部状态；改完用 `scripts/pack.ps1` 重装即还原。
+
 ### ④ 顺手修的坑：MutationObserver 的取值
 
 - 插件里的 `new MutationObserver(...)` 取的是**全局**构造器。在浏览器里 `window.MutationObserver === MutationObserver` 所以无差别；但在被另一个 window realm 执行时（jsdom 回归台、宿主沙箱）没有全局 `MutationObserver` → `ReferenceError` 被 catch 吞掉 → **观察器从未安装**。这是既有代码的老问题（老 class 观察器在测试里也一直没生效），现在统一走 `mutationObserverFor(callback)`：优先 `window.MutationObserver`。
@@ -109,8 +145,9 @@
 
 ### 回归
 
-- 新套件 `D:\code\.tmp-dpp-test\test-b96-locale-theme-righttabs.js`（31 项）：主题服务/事件/DOM 属性三条路径与销毁解绑；宿主语言压过 navigator.language、`locale/change` 与 store 双通道、销毁解绑；右栏页类型列出、资源类型与需参数 kind 不列出、点击打开、点击前类型已卸载则不打开、无宿主控制器/无会话则不出组、title 抛错兜底、palette 同样列出。
-- 全量：b96 31/31 + b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **197 项全绿**。
+- 新套件 `D:\code\.tmp-dpp-test\test-b96-locale-theme-righttabs.js`（33 项）：主题服务/事件/DOM 属性三条路径与销毁解绑、**「宿主 presenter 信号压过说谎的 theme 服务」两条**；宿主语言压过 navigator.language、`locale/change` 与 store 双通道、销毁解绑；右栏页类型列出、资源类型与需参数 kind 不列出、点击打开、点击前类型已卸载则不打开、无宿主控制器/无会话则不出组、title 抛错兜底、palette 同样列出。
+- 全量：b96 33/33 + b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **199 项全绿**。
+- **真机端到端复验**（CDP 驱动真实桌面端）：v1.6.0 已加载（`__dppFeedback.feedbackEnvBody()` → `dsh-panel-pins v1.6.0`）；palette 里出现「右栏标签页 · 12」组（宿主 12 个页类型）且资源类型未混入；`mbsn` 命中「面面板收纳」；宿主语言 English ↔ 中文 实时切换，启动器文案跟着变（`Open panels menu` ↔ `打开面板菜单`）；宿主深色 ↔ 跟随系统 实时切换，`html.dpp-dark` 跟着变。
 
 ## v1.5.0（b95）宿主快捷键 + 拼音搜索 + 主面板入口（2026-11-25）
 
