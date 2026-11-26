@@ -12,19 +12,20 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 2026-11-17 | v1.2.1 双发布（scoped 最终版）；随后 `npm deprecate @qdnbd/dsh-panel-pins@"<1.2.1"`——8 个旧版本挂迁移路牌，1.2.1 保持干净（deprecated 旧版是冻结别名的正确用法） |
 | 2026-11-17 | git 仓根转裸名身份（package.json/cordis.patch.yml name = dsh-panel-pins），删除 publishing/bare 中转；**单发布时代开始** |
 
-## 当前状态（2026-11-25，**v1.5.0 待发布**，npm 上仍是 v1.4.8）
+## 当前状态（2026-11-26，**v1.6.0 待发布**，npm 上仍是 v1.4.8）
 
 | 项 | 值 |
 | --- | --- |
-| npm 主包 | `dsh-panel-pins@1.4.8`（latest，已发布）。**v1.5.0 尚未 publish**——本机验证 + 用户 OTP 后执行 |
-| 待发布内容 | **v1.5.0（b95）** 三件事：① `Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；② 搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；③ 只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
-| 回归 | b95 新套件 25/25（宿主快捷键注册/解析器语义/拒绝注册回退/主面板组/拼音搜索）+ b95 拼音纯函数 16/16 + b84 26/26 + b86 41/41 + b85 29/29（顺手修好该套件写死的 `v1.4.0`/`b86` 陈旧断言，改成从 package.json 与源码动态读取）+ b90 滚动契约 29/29 |
-| 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新能力在无 `shortcuts` 服务的宿主上自动降级，不影响 0.2.0/0.2.1 线 |
-| GitHub | ✅ commit `f90f0d8` 已推 `origin/main`；✅ annotated tag **v1.5.0** 已推（tag 对象 `85c6043` → deref `f90f0d8`，与 HEAD 一致）；✅ **Release 页已建**：https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0 （正式版，非 draft / 非 prerelease，标记为 Latest；说明源文件归档在 `publishing/release-notes-v1.5.0.md`） |
+| npm 主包 | `dsh-panel-pins@1.4.8`（latest，已发布）。**v1.5.0 与 v1.6.0 均未 publish**——按用户要求暂缓，等本机验证通过后一并执行 |
+| 待发布内容 | **v1.6.0（b96）** 三件事：① 宿主**右栏标签页类型**进入启动器「右栏标签页」分组（只列「页类型」——资源类型按地址打开，按名字打开会挂上抛异常的坏标签页）；② **界面语言跟随宿主语言设置**（8 种语言、应用内可切），不再靠 `navigator.language` 猜；③ **主题实时跟随宿主**（订阅 `theme/change`，旧实现盯的是宿主根本不碰的 `<html>` class，切主题最长滞后 5 秒） |
+| 上一版 | **v1.5.0（b95）**：`Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
+| 回归 | b96 新套件 31/31（宿主主题服务/事件/DOM 属性三路径、语言跟随与双通道、右栏页类型筛选与点击打开）+ b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **197 项全绿** |
+| 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新增的 `locale` / `theme` / `sidebarRightTabs` / `sidebarRight` 全部走 `optionalService()`，**未写进 `inject`**，旧宿主上自动降级（无 locale 服务则按浏览器语言、无 theme 服务则读宿主 DOM 属性、无右栏服务则不出组） |
+| GitHub | ✅ v1.5.0：commit `f90f0d8` + annotated tag + Release 页（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0）；⏳ **v1.6.0 tag / Release 页待建** |
 | npm | ⏸️ **按用户要求暂不 publish**（2026-11-26）：npm 上 latest 仍是 `1.4.8`，GitHub Release 已先行就位——两者会在执行 publish 后对齐 |
-| 本机切换 | ✅ **已切到本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`）；tarball 内 `lib/client.js` / `README.md` 与仓库 HEAD **SHA256 逐一相等**（`5BF66D38…`），即「本机验证的那份」==「将要 publish 的那份」；**待 1.5.0 发布后**再切回 registry `^1.5.0` |
+| 本机切换 | ✅ 已装 **本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`）；⏳ **v1.6.0 待重新打包安装**（`scripts\pack.ps1`），之后才切回 registry |
 | 旧 scoped 包 | ✅ **2026-11-25 已废弃全部 9 个版本**（含 latest=1.2.1），文案指向裸名包；`latest` 保留仍可装，只打 warning。见下方「2026-11-25 分发动作 ①」 |
-| 收录 PR | 待更新：补 `pinyin` / `shortcut` / `main-panel` 关键词（见下方「2026-11-25 分发动作」②） |
+| 收录 PR | 待更新：补 `pinyin` / `shortcut` / `main-panel` / `right-sidebar` / `locale` 关键词（见下方「2026-11-25 分发动作」②） |
 
 ## 历史状态（2026-11-25，已发布 v1.4.8）
 

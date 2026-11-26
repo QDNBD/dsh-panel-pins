@@ -65,6 +65,53 @@
 
 **历史**：v1.3.3–v1.4.2 曾把构建号放进脚注与环境块（当时的理由：issue 环境块与脚注一眼对照）；v1.4.3 起废止——对照需求由 `?dppdebug` 承担。
 
+## v1.6.0（b96）右栏标签页 + 语言跟随 + 主题跟随（2026-11-26）
+
+调研见 [OPPORTUNITIES.md](OPPORTUNITIES.md) 与 [COMPETITOR-ANALYSIS.md](COMPETITOR-ANALYSIS.md) 第九节。宿主版本 0.2.2-rc.5。三项都来自「宿主给了公开契约、我们没接」的漏接，不新增范式、不做 DOM 手术。
+
+### ① 右栏标签页进入面板清单（推翻 v1.5.0 的旧结论）
+
+- **旧结论是错的**：v1.5.0 写「宿主没有 `openGuide` 之类的公共打开 API，所以右侧栏不做」——**搜错了 API 名**。宿主确有完整的公开三件套：
+  - `ctx.sidebarRightTabs.register({ id, kind, patterns?, priority?, canOpen?, title, guide?, keepMounted? })`（类型注册）
+  - `ctx.slots.register({ name: 'sidebar.right.pane.tab', key: definition.id }, Body)`（正文注册）
+  - `ctx.sidebarRight.openTab(kind, options?)`（打开）
+  宿主 README 明写「the shipped guide type goes through exactly the same public path a type from another package does」（`dsh-client-ui-sidebar-right/README.md:83-86`）。
+- **只列「页类型」**：注册项分两类——**页类型**（无 `patterns`，按 kind 打开）与**资源类型**（声明 `patterns` 匹配 `dsh-resource://` 地址，按**地址**打开）。`openTab()` 只会合成页地址 `sidebar://<kind>`（`service.ts:482` + `contract/seed.ts:45-47`），**不检查 patterns** → 对资源 kind 按名字打开会挂上一个 body 直接抛异常的坏标签页（documentpreview `CodeBody.tsx:17`）。且运行时没有「枚举某类型的全部地址」的公开 API，资源类型天然无法从类型清单推导可点击的地址。
+- **`entries()` 已经只返回「当前生效」的那份**：被 extension 接管的 builtin 不会出现（`tab-registry.ts:313-315, :407-408`），所以我们**不需要**自己判断 extension/builtin 优先级。
+- **`title` 是必填函数 `(address) => string`**，不是字符串。页类型收到的地址是 `sidebar://<kind>`；`pageAddress()` 本身**不是公开导出**，所以自己拼同一个字符串。第三方 title 实现不受控 → 必须 try/catch，兜底显示 kind。
+- **`openTab` 会抛两种错**：kind 未注册（`service.ts:481`）与**没有会话在屏**（`service.ts:861`，优先于 kind 检查）。所以：点击瞬间**再查一次** `registry.get(kind)`；并且组出现前先看 `ctx.sidebarRight.mounted.getSnapshot()`，没会话就不出组（不出死行）。宿主自己的范式见 `ui-open-in-app/src/client/context-menus.tsx:192-193`（查了再开）。
+- **需要导航参数的 kind 手工排除**（`scheduleTask`）：参数表 `SidebarRightTabParamsMap` 只是 TS 声明合并，运行时不存在（`contract/params.ts:38-40`），只能靠白名单。
+- 枚举走 `ctx.sidebarRightTabs.entries()`，**每次开菜单现取**——别的包可能在我们之后才注册类型（每个类型都在自己包的 `ctx.effect` 里注册），快照会漏。
+- 徽标**不计入**右栏条目：b95 的「主面板」组同样没计入，徽标的口径是「侧栏面板 + 插件入口行」。
+
+### ② 语言跟随宿主
+
+- 宿主的 locale runtime 在 **client half** 提供（`dsh-client-locale/src/client/index.ts:588 ctx.provide('locale', locale)`），8 种语言（zh/en/ja/es/fr/de/ru/pt）且可在应用内切换。当前语言 id = `ctx.locale.getSnapshot().active`（`index.ts:75-82, :228-230`）；**没有** `.current` / `.language` 属性，别猜名字。
+- 两条订阅通道语义不同：**`subscribe(fn)`**（store 式）在任何快照变化时触发（含字典注册）；**`ctx.on('locale/change', snapshot)`** 只在生效语言切换时触发（`index.ts:88-99, :506`）。我们两条都挂，`refreshLocale()` 在语言没动时是 no-op，重复信号零成本。
+- **走 B 方案（自己读 active id 选 zh/en），不注册宿主命名空间**：注册命名空间要求补齐 8 语言字典才有收益，而 A 方案（`ctx.locale.register(ns, {zh, en})`）的逐键 fallback 链与 `common` 继承对我们只有双语时**结果完全等价**，改动量却大一个数量级；且注册命名空间还有命名空间撞名抛错、缺键静默显示 key 本身两个坑。
+- **`locale` 绝不写进 `inject`**：旧宿主（engines.dsh >= 0.2.0-rc.1）可能没有 locale 包，声明缺失服务会 park 整个 fiber、插件永不加载。一律 `optionalService('locale')`。
+- **原来的 `const zh` 是模块求值时的一次性快照**（`client.js:481-487`，IIFE 读 `navigator.language`），导致：宿主设成中文而浏览器是 en-US 时插件显示英文；且挂载后无法切换。现在 `zh` 是 `let`，`LABEL` 由 `buildLabels()` 生成、**原地重建**（对象 identity 不变 → 185 处 `LABEL.x` 引用一行不用改），`refreshLocale()` 负责重算 + 重建 + 通知订阅者。
+- 设置页订阅 `onLocaleChange` 触发 React 重渲染（`setLocaleRev`）；设置项的 `label` 本来就是 thunk（`label: () => zh ? … : …`），宿主重渲染时自动跟随。
+- 启动器按钮的 `aria-label` 与 `.dpp-launcher-label` 是**创建时缓存**的 → `repaintLauncherLabels()` 单独刷。
+
+### ③ 主题跟随宿主
+
+- 宿主运行期改的是**三个属性**，**没有一个是 `<html>` 的 class**：`<html>.style.colorScheme`、`<html>[data-ds-theme-source]`、`<body>[data-ds-dark-theme]`（`dsh-client-ui-layout/src/client/theme-presenter.ts:69-76`）。v1.5.0 的观察器只听 `class` → **根本不会触发**，切主题最长 5 秒（靠兜底 interval）。
+- 正解是**订阅宿主的公开事件**：`ctx.on('theme/change', snapshot)`，snapshot 带 `active.colorScheme`（`dsh-client-ui-theme/src/client/index.ts:144, :438`）；服务本体是 `ctx.provide('theme', theme)`（`:609`），`theme.getTheme()` 同样给出快照。零 DOM 嗅探、零滞后。
+- **DOM 兜底**（无 theme 服务的老宿主）：读宿主真正写的属性。注意 `data-ds-theme-source` 为 `'system'` 时实际明暗由 `body[data-ds-dark-theme]` 决定（该属性只在解析结果为暗色时存在）→ **body 属性才是权威**。
+- **DOM 推导出来的结果不能缓存**：宿主切回亮色时是**移除** `data-ds-dark-theme`，缓存会把弹层留在暗色。所以只有**服务/事件**的答案进 `hostColorScheme`，DOM 每次实时读。
+- 影响面有限：`html.dpp-dark` 只用于弹层不透明底色（不是主题失效），属抛光级缺陷——但改动只有几行，顺手做掉。
+
+### ④ 顺手修的坑：MutationObserver 的取值
+
+- 插件里的 `new MutationObserver(...)` 取的是**全局**构造器。在浏览器里 `window.MutationObserver === MutationObserver` 所以无差别；但在被另一个 window realm 执行时（jsdom 回归台、宿主沙箱）没有全局 `MutationObserver` → `ReferenceError` 被 catch 吞掉 → **观察器从未安装**。这是既有代码的老问题（老 class 观察器在测试里也一直没生效），现在统一走 `mutationObserverFor(callback)`：优先 `window.MutationObserver`。
+- 这条修完，DOM 兜底路径才**可测**——之前 b96 的两条 DOM 断言就是被它挡住的。
+
+### 回归
+
+- 新套件 `D:\code\.tmp-dpp-test\test-b96-locale-theme-righttabs.js`（31 项）：主题服务/事件/DOM 属性三条路径与销毁解绑；宿主语言压过 navigator.language、`locale/change` 与 store 双通道、销毁解绑；右栏页类型列出、资源类型与需参数 kind 不列出、点击打开、点击前类型已卸载则不打开、无宿主控制器/无会话则不出组、title 抛错兜底、palette 同样列出。
+- 全量：b96 31/31 + b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **197 项全绿**。
+
 ## v1.5.0（b95）宿主快捷键 + 拼音搜索 + 主面板入口（2026-11-25）
 
 调研见 [COMPETITOR-ANALYSIS.md](COMPETITOR-ANALYSIS.md) 第八节。宿主版本 0.2.2-rc.5。
@@ -94,7 +141,7 @@
 - 宿主 `ui-layout` 用 `ctx.slots.entries('main')` 枚举主面板（`entry.options.key`），我们读**同一个公开槽位**；打开用 `layout.selectPanel(key)`——与设置页桥接同一调用。
 - 排除：宿主会话列 `conversation`、我们自己的 `dpp-bridge-*`（已在「设置页」组里）。
 - 标签：优先 `options.label` → `options.title` → 槽位 key（第三方多半只给 key，会显示原始 id，属可接受的降级）。
-- **右侧栏标签页不做**：better-sidebar 的 tab 落在宿主原生右栏，宿主**没有** `openGuide` 之类的公共打开 API（`openGuide` 在 asar 里 0 命中），只有 `openResource` 这类按地址打开的接口——枚举出来也点不开，故不做（宁可不做，也不做点不动的死行）。
+- **右侧栏标签页当时不做**（⚠️ **此结论已被 v1.6.0 推翻**）：better-sidebar 的 tab 落在宿主原生右栏，我们当时搜的是 `openGuide`（asar 里 0 命中）就断定没有公共打开 API——**搜错了 API 名**。宿主其实有完整的公开三件套（`ctx.sidebarRightTabs.register` / `ctx.slots.register({name:'sidebar.right.pane.tab'})` / `ctx.sidebarRight.openTab(kind)`）。**教训**：宿主契约要用「包 README + TS 源码」双向查证，不能只靠关键词全库扫描的 0 命中下结论——0 命中只证明**这个符号名**不存在。见 v1.6.0 章节与 OPPORTUNITIES.md。
 
 ### 回归
 

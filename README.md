@@ -41,7 +41,8 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 - **🖱️ Drag anything, anywhere** — grab any panel or plugin row and drop it where it belongs; a **blue insertion line** marks the exact landing spot. Works right in the sidebar *and* in the pinned manager, with a right-click *Move to front* fallback for touch/keyboard users. One click restores the host's default order.
 - **✏️ Make every row yours** — right-click to hide a row, rename it with a floating editor anchored under the row, pin it, or push it to the top. Display-only, survives restarts and language switches.
 - **💾 Named layout presets** — pins, folds, icon-only and the compact footer snapshot into one preset; flip "work" ↔ "play" in one click from the palette.
-- **🧲 Nothing is unreachable** — third-party plugins that only registered a Settings page get their full page as a row in the menu; plugins that only registered a **main panel** land in the *Main panels* group.
+- **🧲 Nothing is unreachable** — third-party plugins that only registered a Settings page get their full page as a row in the menu; plugins that only registered a **main panel** land in the *Main panels* group; the host's own **right-sidebar tab types** get a group of their own.
+- **🌐 Follows the host's language and theme** — the plugin reads the host's own language setting (8 languages) and repaints the moment you switch it; the theme follows the host instantly instead of lagging a beat behind.
 - **🧊 A sidebar that stays slim** — icon-only mode (18px glyph column) plus a compact footer with four independent height caps, so the session list never gets squeezed to a slit again.
 - **🛡️ Zero risk, zero residue** — display layer only, no DOM surgery, host re-render-proof; uninstall and the sidebar is pixel-identical to before. Light / dark / wallpaper themes all work.
 
@@ -53,23 +54,25 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 | Opening a panel = scroll → expand → hunt | `Ctrl+K`, two letters, Enter — or `Alt+1..9` while the menu is open |
 | Plugin names are long and cryptic | Rename any row; display-only, the original still keys pins/groups |
 | Plugins that only registered a Settings page are unreachable | v1.4 bridges them: their Settings page becomes a row in the menu |
+| The host is set to 中文 but the plugin still answers in English | v1.6: the plugin reads the host's own language setting, and repaints the moment you switch it |
 | One arrangement for work, another for play | Save each as a named preset and switch from the palette |
 
 ## Why this one
 
-Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panellist`, `panel-compact`, `panel-tidy`, `panel-titlebar`, `panel-order`, `panel-folders`, `panel-collapse`, `panel-fold`, this one), only this plugin does all five:
+Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panellist`, `panel-compact`, `panel-tidy`, `panel-titlebar`, `panel-order`, `panel-folders`, `panel-collapse`, `panel-fold`, this one), only this plugin does all six:
 
 1. **You never open the sidebar.** A global `Ctrl+K` palette, in-menu search with hit highlighting, `Alt+1..9` jumps and an MRU group — the other ten have none of these.
 2. **The shortcut belongs to the host.** `Ctrl+K` is registered with the host's own shortcut service: rebind it, see its conflicts, and let the host decide whether the key may fire instead of the plugin guessing.
 3. **Chinese users can actually search.** Pinyin initials (`mbsn` → 面板收纳), full pinyin (`mianban` → 面板) and fuzzy subsequences, over a bundled GB2312 table — **entirely local, nothing is sent anywhere**.
 4. **The whole layout saves as a preset.** Pins, top pins, folded groups, whitelist, icon-only and compact footer in one snapshot; restore a scenario in one click.
-5. **The widest host range.** Requires `DSH ≥ 0.2.0-rc.1` and `Node ≥ 20`; `panel-control` / `panel-layout` need `≥ 0.2.1-rc.3`, and `panel-layout` / `panel-tidy` / `panellist` also need `Node ≥ 22`.
+5. **It speaks the host's language, literally.** The plugin reads the host's own language setting and its theme, so it never shows English under a Chinese host — and it repaints the instant either changes.
+6. **The widest host range.** Requires `DSH ≥ 0.2.0-rc.1` and `Node ≥ 20`; `panel-control` / `panel-layout` need `≥ 0.2.1-rc.3`, and `panel-layout` / `panel-tidy` / `panellist` also need `Node ≥ 22`.
 
-### Full comparison (2026-11-25, latest release of each)
+### Full comparison (2026-11-26, latest release of each)
 
 > Facts only, no scorekeeping. **Enable one at a time** — they mutate the same sidebar nodes.
 
-| Capability | **This plugin 1.5.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| Capability | **This plugin 1.6.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K global command palette** | ✅ | — | — | — | — | — | — |
 | **Registered in the host's shortcut service (rebindable, conflicts visible)** | ✅ | — | — | — | — | — | — |
@@ -79,7 +82,9 @@ Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panell
 | **Alt+1..9 direct jump** | ✅ | — | — | — | — | — | — |
 | **Recent panels (MRU, cap 5)** | ✅ | — | — | — | — | — | — |
 | **Named layout presets** | ✅ | — | — | — | — | — | — |
-| Collect sidebar rows into a grouped menu | ✅ panels / plugin entries / settings pages / main panels | ✅ group tree | partial: overflow + bottom-left trio only | ✅ flyout groups | ✅ keeps 3 rows | ✅ drag into *More* | — |
+| **UI language follows the host's own language setting** | ✅ v1.6 | — | — | — | — | — | — | — |
+| **Theme follows the host instantly (no 5s lag)** | ✅ v1.6 | — | — | — | — | — | — | — |
+| Collect sidebar rows into a grouped menu | ✅ panels / plugin entries / settings pages / main panels / right-sidebar tabs | ✅ group tree | partial: overflow + bottom-left trio only | ✅ flyout groups | ✅ keeps 3 rows | ✅ drag into *More* | — |
 | Drag-to-reorder sidebar rows | ✅ live drop line | ✅ drag handle | ✅ | ✅ | ✅ | — |
 | Hide / rename | ✅ / ✅ floating editor | ✅ / ✅ | overflow only / — | ✅ / ✅ | — / — | — / — | — |
 | Custom groups | ✅ | ✅ | — | ✅ | — | — | — |
@@ -277,6 +282,7 @@ All eleven work on the same sidebar with different aims. **Enable only one at a 
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.6.0** — three more: the host's **right-sidebar tab types** join the menu in a group of their own (page types only — a resource type is opened by address, not by name, so listing it would open a broken tab); the plugin's **UI language now follows the host's own language setting** (8 languages, switchable in-app) instead of guessing from `navigator.language`; and the **theme follows the host instantly** — the old observer watched a `<html>` class the host never touches, so a theme switch could take up to five seconds to land
 - **1.5.0** — three things: `Ctrl+K` moves into the host's shortcut service (rebindable under *Settings → Shortcuts*, conflicts visible, the host arbitrates inputs and modals); search understands pinyin initials, full pinyin and fuzzy subsequences and ranks hits by relevance; third-party plugins that ship only a **main panel** join the launcher's *Main panels* group
 - **1.4.8** — fix the capped panel list still not wheel-scrolling on rc.5 (v1.4.4's driver-free cap): the lite driver absorbs only list-capable steps and passes boundary steps through untouched; v1.4.7's truncated stylesheet (a duplicated selector line silently dropped every rule after it) is reverted — the stylesheet is byte-identical to 1.4.4 again
 - **1.4.7** — bring back the capped panel list on rc.5 (user request): a lite wheel driver absorbs only list-capable steps and passes every list-boundary step through to the host hand-off untouched — list and workspace alive together for the first time
