@@ -21,7 +21,7 @@ v1.2.1 是 @qdnbd/dsh-panel-pins 的**最后一版**（scoped 别名冻结）；
 | 上一版 | **v1.5.0（b95）**：`Ctrl+K` 注册进宿主快捷键服务 `ctx.shortcuts`（可在「设置 → 快捷键」改键、冲突可见；宿主负责输入框/模态仲裁，老宿主与键位被占时回退插件自己的监听）；搜索支持拼音首字母 / 全拼 / 模糊子序列，按相关度在组内排序（内置完整 GB2312 6763 字表，纯本地）；只注册了**主面板**（根级 `main` 槽）的第三方插件进入启动器「主面板」分组 |
 | 回归 | b96 新套件 33/33（宿主主题服务/事件/DOM 属性三路径 + **「宿主 presenter 信号压过说谎的 theme 服务」**、语言跟随与双通道、右栏页类型筛选与点击打开）+ b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **199 项全绿**；另在**真实桌面端**用 CDP 端到端复验（v1.6.0 已加载 / 右栏标签页 12 项 / 拼音命中 / 宿主语言与主题实时切换均生效） |
 | 兼容性 | engines.dsh 不变（`>=0.2.0-rc.1 <0.3.0-0`）；新增的 `locale` / `theme` / `sidebarRightTabs` / `sidebarRight` 全部走 `optionalService()`，**未写进 `inject`**，旧宿主上自动降级（无 locale 服务则按浏览器语言、无 theme 服务则读宿主 DOM 属性、无右栏服务则不出组） |
-| GitHub | ✅ v1.5.0：commit `f90f0d8` + annotated tag + Release 页（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0）；⏳ **v1.6.0 tag / Release 页待建** |
+| GitHub | ✅ v1.5.0：commit `f90f0d8` + annotated tag + Release 页（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.5.0）；⏳ **v1.6.0**：commit `e222e30`（功能）→ `556c1ed`（主题判定修正）→ `f20531f`（pack.ps1 双锁文件同步），annotated tag **v1.6.0** 指向 `f20531f`，Release 页已建并已按真机复验结果更新正文（https://github.com/QDNBD/dsh-panel-pins/releases/tag/v1.6.0） |
 | npm | ⏸️ **按用户要求暂不 publish**（2026-11-26）：npm 上 latest 仍是 `1.4.8`，GitHub Release 已先行就位——两者会在执行 publish 后对齐 |
 | 本机切换 | ✅ 已装 **本地 1.5.0**（`file:D:/code/.dist/local-dsh-panel-pins-1.5.0.tgz`）；⏳ **v1.6.0 待重新打包安装**（`scripts\pack.ps1`），之后才切回 registry |
 | 旧 scoped 包 | ✅ **2026-11-25 已废弃全部 9 个版本**（含 latest=1.2.1），文案指向裸名包；`latest` 保留仍可装，只打 warning。见下方「2026-11-25 分发动作 ①」 |
