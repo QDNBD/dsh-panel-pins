@@ -68,11 +68,11 @@ dsh plugin --profile <你的 profile> add dsh-panel-pins
 5. **它说的就是宿主的语言。** 插件直接读宿主自己的语言设置与主题——宿主是中文，它就不会回英文；语言或主题一变，立刻跟着变。
 6. **兼容区间最宽。** 要求 `DSH ≥ 0.2.0-rc.1` + `Node ≥ 20`；`panel-control` / `panel-layout` 要 `≥ 0.2.1-rc.3`，`panel-layout` / `panel-tidy` / `panellist` 还要 `Node ≥ 22`。
 
-### 完整对照（2026-11-25，十一个同类插件各自最新版）
+### 完整对照（2026-11-26，各插件各自最新版）
 
 > 只列事实，不贬低竞品。**同一时间建议只启用一个**——它们改同一批侧栏节点，同时开会互相顶掉。
 
-| 能力 | **本插件 1.5.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| 能力 | **本插件 1.6.1** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K 全局命令面板** | ✅ | — | — | — | — | — | — |
 | **键位注册进宿主快捷键系统（可改键/看冲突）** | ✅ | — | — | — | — | — | — |
@@ -283,6 +283,7 @@ DeepSeek Harness 桌面端也可以：**设置 → 插件**，从插件市场搜
 
 活跃维护，通常每 1–3 天一个版本。近期：
 
+- **1.6.1** — 修复：侧栏「**新会话**」按钮看着空了一半——根源是插件自己的样式表命中面太宽：`[class*="_newSession"]` 把按钮内部的标签、内容 span 一起匹配上，多出来的下边距把「+ 新会话」文字顶到按钮垂直中心上方 8px。现在这条间距只作用在行上，文字回到正中
 - **1.6.0** — 再加三件：宿主自己的**右栏标签页类型**进入菜单、单成一组（只收「页类型」——资源类型是按地址打开的、按名字打开会开出坏标签页）；**界面语言改跟宿主语言设置**（8 种语言、应用内可切），不再靠 `navigator.language` 猜；**主题实时跟随宿主**——原来的观察器盯的是宿主根本不碰的 `<html>` class，切主题最长要等五秒
 - **1.5.0** — 三件事：`Ctrl+K` 注册进宿主快捷键服务（`设置 → 快捷键` 可改键、冲突可见、宿主自己仲裁输入框/模态）；搜索支持拼音首字母 / 全拼 / 模糊匹配并按相关度排序；只注册了**主面板**的第三方插件进入启动器「主面板」分组
 - **1.4.8** — 修复 rc.5 限高列表滚轮仍然无效（1.4.4 起的免驱动限高版）：轻量驱动只接管列表可吸收的滚动步，边界步原样放行；同时回退 1.4.7 被截断的样式表（重复选择器行导致其后所有规则被解析器静默丢弃）——样式表恢复与 1.4.4 逐字节一致

@@ -149,6 +149,42 @@ Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--re
 - 全量：b96 33/33 + b95 快捷键/主面板 25/25 + b95 拼音 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **199 项全绿**。
 - **真机端到端复验**（CDP 驱动真实桌面端）：v1.6.0 已加载（`__dppFeedback.feedbackEnvBody()` → `dsh-panel-pins v1.6.0`）；palette 里出现「右栏标签页 · 12」组（宿主 12 个页类型）且资源类型未混入；`mbsn` 命中「面面板收纳」；宿主语言 English ↔ 中文 实时切换，启动器文案跟着变（`Open panels menu` ↔ `打开面板菜单`）；宿主深色 ↔ 跟随系统 实时切换，`html.dpp-dark` 跟着变。
 
+## v1.6.1（b97）新会话按钮居中修复（2026-11-26）
+
+### 现象
+
+侧栏「+ 新会话」按钮里的文字**顶在上沿**，按钮下半截留一大块空白，整个按钮看着像半个空输入框。2026-11-26 用户两次截图报此问题。
+
+### 定位过程（每一步都可复核）
+
+1. **先排除外部插件**：真机 CDP 抓到按钮元素是 `button.wtg9ga_newSession`（宿主 CSS module 的哈希类名），`CSS.getMatchedStylesForNode` 命中的规则只有 3 条——2 条浏览器 UA 默认 + 1 条宿主自己的 `.wtg9ga_newSession`（来自 `@deepseek-ai/dsh-client-ui-sidebar/SidebarRoot.module.css`）。**没有任何插件规则命中**；把 33 张第三方样式表全部 `sheet.disabled = true` 后，按钮的计算样式（`rgb(255,255,255)` / `0.8px solid rgba(0,0,0,0.12)` / `12px`）**一字不变**。宿主自己的样式本来就是「白底 + 细描边 + 12px 圆角」。
+2. **再量自己的锅**：A/B 对照——同一时刻**只**切换本插件那张样式表：
+
+   | | 按钮垂直中心 | 文字中心 | 偏差 |
+   | --- | --- | --- | --- |
+   | 本插件样式表**开** | 115 | 107 | **偏上 8px** |
+   | 本插件样式表**关** | 111 | 111 | **0** |
+
+3. **根因**：`html.dpp-tidy.dpp-tidy-brand [class*="_newSession"] { margin-bottom: 8px !important; }`。宿主把「新会话」拆成
+
+   ```
+   div._newSessionRow → div[data-slot=sidebar.session.action] → button._newSession
+     → span._newSessionLabelMask → span._newSessionContent → span._newSessionLabel
+   ```
+
+   而 `[class*="_newSession"]` 是**前缀包含**匹配，一次命中 **6 个**元素（行、按钮、遮罩、内容、标签、快捷键提示）。按钮是 `display:flex; align-items:center`，多出来的 8px 下边距落在内层 span 上，把内容整体顶到上沿。
+4. **修法**：把间距锚到**行**本身 → `[class*="_newSessionRow"]`（宿主类名 `wtg9ga_newSessionRow`）。行间距（按钮与下方面板列表之间的 8px）保留，按钮与内层恢复宿主原样。
+
+### 教训
+
+- **用宿主的哈希类名做「包含匹配」时，必须挑唯一的那一段**。`_newSession` 是 `_newSessionRow` / `_newSessionLabel` / `_newSessionContent` / `_newSessionLabelMask` / `_newSessionShortcut` 的**共同前缀**，一写就全中。要写成 `_newSessionRow` 这种带完整后缀的词。
+- 这类问题**像素级证据比目测可靠**：CDP 量 `getBoundingClientRect()` 的中心差（以及 `Range` 量文字墨迹位置），比盯截图猜快得多。
+- 复验手段有两套：CDP（`--remote-debugging-port` + `Runtime.evaluate`）为主；**CDP 端口没起来时用 `PrintWindow` 直接抓窗口像素**做兜底（本轮就撞上过端口没绑上的情况）。
+
+### 回归
+
+全套 **199 项全绿**（b96 33 / b95 快捷键 25 / b95 拼音 16 / b84 26 / b85 29 / b86 41 / b90 29）；真机复验：按钮内壁 y=121~166（中心 143.5）、文字墨迹 y=136~151（中心 143.5），**偏差 0**。
+
 ## v1.5.0（b95）宿主快捷键 + 拼音搜索 + 主面板入口（2026-11-25）
 
 调研见 [COMPETITOR-ANALYSIS.md](COMPETITOR-ANALYSIS.md) 第八节。宿主版本 0.2.2-rc.5。

@@ -72,7 +72,7 @@ Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panell
 
 > Facts only, no scorekeeping. **Enable one at a time** — they mutate the same sidebar nodes.
 
-| Capability | **This plugin 1.6.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| Capability | **This plugin 1.6.1** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K global command palette** | ✅ | — | — | — | — | — | — |
 | **Registered in the host's shortcut service (rebindable, conflicts visible)** | ✅ | — | — | — | — | — | — |
@@ -282,6 +282,7 @@ All eleven work on the same sidebar with different aims. **Enable only one at a 
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.6.1** — fix: the sidebar's **New-session button** looked half-empty, because the plugin's own stylesheet matched more than it should — `[class*="_newSession"]` also caught the button's inner label and content spans, so the extra margin pushed the "+ 新会话" text 8px above the button's vertical middle. The gap now applies to the row only, and the text is centred again
 - **1.6.0** — three more: the host's **right-sidebar tab types** join the menu in a group of their own (page types only — a resource type is opened by address, not by name, so listing it would open a broken tab); the plugin's **UI language now follows the host's own language setting** (8 languages, switchable in-app) instead of guessing from `navigator.language`; and the **theme follows the host instantly** — the old observer watched a `<html>` class the host never touches, so a theme switch could take up to five seconds to land
 - **1.5.0** — three things: `Ctrl+K` moves into the host's shortcut service (rebindable under *Settings → Shortcuts*, conflicts visible, the host arbitrates inputs and modals); search understands pinyin initials, full pinyin and fuzzy subsequences and ranks hits by relevance; third-party plugins that ship only a **main panel** join the launcher's *Main panels* group
 - **1.4.8** — fix the capped panel list still not wheel-scrolling on rc.5 (v1.4.4's driver-free cap): the lite driver absorbs only list-capable steps and passes boundary steps through untouched; v1.4.7's truncated stylesheet (a duplicated selector line silently dropped every rule after it) is reverted — the stylesheet is byte-identical to 1.4.4 again
