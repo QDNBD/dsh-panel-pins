@@ -52,6 +52,7 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 | --- | --- |
 | A dozen rows; the ones you use got pushed into *More* | Everything sits in one **Panels** menu; the sidebar keeps only what you pinned |
 | Opening a panel = scroll → expand → hunt | `Ctrl+K`, two letters, Enter — or `Alt+1..9` while the menu is open |
+| Never knew `Ctrl+K` existed | Type `/` in the composer and pick "Open panel launcher" |
 | Plugin names are long and cryptic | Rename any row; display-only, the original still keys pins/groups |
 | Plugins that only registered a Settings page are unreachable | v1.4 bridges them: their Settings page becomes a row in the menu |
 | The host is set to 中文 but the plugin still answers in English | v1.6: the plugin reads the host's own language setting, and repaints the moment you switch it |
@@ -72,7 +73,7 @@ Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panell
 
 > Facts only, no scorekeeping. **Enable one at a time** — they mutate the same sidebar nodes.
 
-| Capability | **This plugin 1.8.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| Capability | **This plugin 1.9.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K global command palette** | ✅ | — | — | — | — | — | — |
 | **Registered in the host's shortcut service (rebindable, conflicts visible)** | ✅ | — | — | — | — | — | — |
@@ -283,6 +284,7 @@ All eleven work on the same sidebar with different aims. **Enable only one at a 
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.9.0** — **slash-menu discoverability**: one new row in the host's own `/` command menu — "Open panel launcher". Users who never learned about `Ctrl+K` now see the entry the moment they type `/`; typing `/launch` ranks the row into view without scrolling, and clicking it opens OUR palette with full pinyin search (the host shell has no pinyin, so we contribute the entry only, never the whole catalog). Hosts without the command menu skip it silently.
 - **1.8.0** — two new capabilities: **touch drag at last** — press a sidebar row for 500ms to arm the drag (haptic tick), a blue insertion line marks the drop point live, release to commit; releasing a hold without moving opens the row context menu (hide/rename/pin all reachable), and an early swipe still hands off to scrolling. The mouse drag path is unchanged. **Collapsed-sidebar badge** — while the sidebar is collapsed, the expand button shows "N rows folded into the launcher"; nothing folded means no badge, and hosts without the slot skip it silently.
 - **1.7.1** — two polish items: the transient toast now consumes the host's own toast tokens (`--dsw-alias-toast-bg/-label`), so it looks exactly like the host's native toasts (dark surface, both palettes); the overlay menu gained proper accessibility semantics — the container moves from an invalid `role="menu"` to `dialog`, the list is a `listbox` with a stable id, rows are `option`s, the search input is a `combobox`, and the ↑↓ keyboard highlight is exposed to screen readers via `aria-activedescendant` (previously a screen reader had no idea which row was highlighted). No behaviour or visual change beyond the toast surface.
 - **1.7.0** — **Pin dual-source convergence**: once the host shipped its own native pin (0.2.2-rc.5), pin state lived in two places (host memory + plugin storage) and a native unpin was silently resurrected by the plugin (verified on the real app: reopening the menu brought the row back). The plugin now detects the native controls, hides its own pin rows, and becomes a pure persistence mirror — **the host owns the interaction, the plugin owns the memory**: every native unpin is recorded and restored after a restart, never resurrected. Legacy hosts without native pins behave exactly as before.

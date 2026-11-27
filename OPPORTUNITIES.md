@@ -287,7 +287,7 @@ HTML5 DnD 在触屏设备上不触发 → 手机/平板用户无法调整侧栏�
 
 | # | 候选 | 做什么 | 解决谁的什么问题 | 证据 | 难度 | 风险 | 硬约束 | 三线 |
 | :-: | --- | --- | --- | --- | :-: | :-: | :-: | :-: |
-| **P1-1** | **面板清单进宿主 `/` 命令菜单**（H2） | `ctx.commandUi.register({ name:'panels', ui:{ kind:'popupSelect', options, onSelect } })` | 不知道 Ctrl+K 存在的绝大多数用户 | `commands/contract.ts:64-75/135-149`；`README.zh.md:28` | 中 | 中 | ❌ | 契约✅ UX✅ 竞品✅(0家) |
+| **P1-1** | **面板清单进宿主 `/` 命令菜单**（H2）✅ **已于 v1.9.0（b101）落地——保守试点**：`commandUi.register({ name:'panel-launcher', ui:{ kind:'action' } })` 一条命令打开自己的 Ctrl+K 面板（拼音不丢）；有界重试解决 mount 时序；真机端到端全过（含 `/启动` 排序直达），详见 MAINTENANCE.md v1.9.0 节 | ~~`ctx.commandUi.register({ name:'panels', ui:{ kind:'popupSelect', options, onSelect } })`~~ | 不知道 Ctrl+K 存在的绝大多数用户 | `commands/contract.ts:64-75/135-149`；`README.zh.md:28` | 中 | 中 | ❌ | 契约✅ UX✅ 竞品✅(0家) |
 | **P1-2** | **拖拽升级为指针事件 + 长按进入拖动态**（U3） | 纯 pointer events 实现拖拽，触屏可拖；长按 500ms 进入拖动态；落点线 + `prefers-reduced-motion` | 手机/平板用户（现在完全不能拖） | 我们 `client.js:6944-7056` 纯 HTML5 DnD；竞品 tidy README 自述用指针事件 | 中 | 中 | ❌ | 代码✅ 竞品✅ 契约❌ |
 | **P1-3** | **无障碍补齐**（U4） | overlay 容器加 `role="menu"`；搜索框加 `role="combobox"` + `aria-controls`；高亮行加 `role="option"` + `aria-activedescendant`；roving tabindex | 读屏用户；也是 WCAG 合规 | 我们 `client.js:4736`（容器无 role）vs `:5479`（子项有 menuitem）；`:5395-5410`（高亮仅 CSS class） | 低 | 低 | ❌ | 代码✅ 契约✅（宿主 PopupSelectView 是范本） |
 | **P1-4** | **原生右键菜单 `ctx.contextMenus`**（H6） | 行右键从自绘 DOM 换成宿主菜单注册 | 触屏长按、观感统一、可达性 | `context-menu/src/client/registry.ts`；宿主用法 `sidebar-right/src/client/index.ts:141-158` | 中 | 中高 | ❌ | 契约✅ 代码✅ 竞品❌ |
@@ -328,5 +328,5 @@ HTML5 DnD 在触屏设备上不触发 → 手机/平板用户无法调整侧栏�
 ## 七、需要用户拍板的三件事
 
 1. ~~**P0-2 的方向**~~ ✅ **已拍板并落地**（2026-11-27）：选了方案 (a)——宿主原生 Pin 在场时插件隐藏自有钉住行、退为纯持久化镜像；v1.7.0（b98）已实现、回归 215 项全绿、真机端到端全过。
-2. **P1-1 的范围**：先把整份面板清单搬进宿主 `/` 菜单，还是只挂一条「打开面板启动器」的 action（保守试点）？
+2. ~~**P1-1 的范围**~~ ✅ **已拍板并落地**（2026-11-27）：保守试点——只挂一条「打开面板启动器」action（v1.9.0/b101），不搬全量清单、拼音保留；全量迁移评估为不划算（宿主壳无拼音）。
 3. **P0-1 的边界**：右栏标签页是「只列出来 + 点击打开」，还是也允许从我们的启动器**管理**（置顶/隐藏）它们？

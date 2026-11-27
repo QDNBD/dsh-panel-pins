@@ -52,6 +52,7 @@ dsh plugin --profile <你的 profile> add dsh-panel-pins
 | --- | --- |
 | 侧栏十几行，常用的那几个被挤进「更多」 | 全部收进一个「面板」菜单，侧栏只留你钉住的行 |
 | 开个面板要滚动 → 展开 → 找 | `Ctrl+K` 输入两字回车；菜单开着时 `Alt+1..9` 直达 |
+| 不知道 `Ctrl+K` 存在 | 在输入框敲 `/`，点「打开面板启动器」 |
 | 插件名又长又看不懂 | 右键重命名，只改本机显示，原名仍是键 |
 | 只注册了设置页、没有侧栏入口的插件无处可达 | v1.4 桥接：它的设置页直接变成菜单里的一行 |
 | 宿主设成中文，插件却还是英文 | v1.6：插件读宿主自己的语言设置，你一改它就跟着改 |
@@ -72,7 +73,7 @@ dsh plugin --profile <你的 profile> add dsh-panel-pins
 
 > 只列事实，不贬低竞品。**同一时间建议只启用一个**——它们改同一批侧栏节点，同时开会互相顶掉。
 
-| 能力 | **本插件 1.8.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| 能力 | **本插件 1.9.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K 全局命令面板** | ✅ | — | — | — | — | — | — |
 | **键位注册进宿主快捷键系统（可改键/看冲突）** | ✅ | — | — | — | — | — | — |
@@ -284,6 +285,7 @@ DeepSeek Harness 桌面端也可以：**设置 → 插件**，从插件市场搜
 
 活跃维护，通常每 1–3 天一个版本。近期：
 
+- **1.9.0** — **斜杠菜单直达**：在宿主自带的 `/` 命令菜单里新增「打开面板启动器」——不知道 `Ctrl+K` 存在的用户，敲一个 `/` 就能看见入口；输入 `/启动` 直接把这一行排进可视区，点击即弹出我们自己的拼音搜索面板（宿主菜单壳没有拼音，所以我们只挂入口、不搬清单）。宿主没有命令菜单的旧版本自动跳过。
 - **1.8.0** — 两件新能力：**触屏也能拖了**——按住侧栏行 500ms 进入拖动态（触觉反馈），蓝色插入线实时指示落点，松手即排序；长按住不动松手则弹出右键菜单（隐藏/重命名/钉住一条不落），先滑动的手势照旧让位给滚动。鼠标拖拽路径不变。**侧栏收起徽标**——收起侧栏时展开按钮旁显示「已收纳 N 行进启动器」，一眼知道收进了多少；没有收纳内容时不显示，旧宿主无此槽位自动跳过。
 - **1.7.1** — 两件打磨：**弹出的提示条改用宿主自己的 toast 配色 token**（`--dsw-alias-toast-bg/-label`），观感与宿主原生提示完全一致（深底白字，两种主题下都不再借菜单配色）；**弹层菜单补齐无障碍语义**——容器从无效的 `role="menu"` 改为 `dialog`，列表是带稳定 id 的 `listbox`，行是 `option`，搜索框是 `combobox`，键盘 ↑↓ 高亮通过 `aria-activedescendant` 暴露给读屏软件（此前读屏完全不知道高亮在哪一行）。功能与外观不变，纯语义与配色修正。
 - **1.7.0** — **Pin 双源收敛**：宿主 0.2.2-rc.5 自带原生图钉后，钉住状态一度存在两份（宿主内存 + 插件本地存储），在原生图钉上取消固定会被插件无声复活（真机实证：重开一次菜单行就回来）。现在插件检测到原生图钉就隐藏自己的钉住行，退为纯持久化镜像——**宿主管交互，插件管记忆**：每次原生取消固定都被记录，重启后由插件恢复，绝不再复活。旧宿主（无原生图钉）行为不变。
