@@ -1,6 +1,6 @@
 {
   "name": "dsh-panel-pins",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "type": "module",
   "description": "DeepSeek Harness 侧栏面板键盘启动器：Ctrl+K 一键直达任何面板（键位可在宿主「设置 → 快捷键」里改），可搜索分组菜单 + 拼音/首字母/模糊匹配 + 命中高亮 + Alt+1..9 直达 + 最近使用，配钉住/置顶/拖拽排序/隐藏/重命名/具名布局预设/仅图标/紧凑底部区，并把只注册了设置页或主面板的第三方插件桥接进菜单。只改显示层，卸载零残留，兼容 DSH ≥0.2.0-rc.1。 A keyboard-first sidebar panel launcher for DeepSeek Harness: Ctrl+K palette (rebindable in the host's own shortcut settings), searchable grouped Panels menu with pinyin/fuzzy matching, Alt+1..9 jumps, MRU, pin/top/hide/rename, drag-to-reorder, named layout presets, settings-page and main-panel bridging, export/import.",
   "keywords": [

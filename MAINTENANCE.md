@@ -301,3 +301,11 @@ Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--re
 
 - pack.ps1 全绿：`local-dsh-panel-pins-1.7.0.tgz` → desktop profile 三处同步，SRC==INST。BUILD=b98，VERSION=1.7.0。
 - npm/GitHub 未发布（同 1.6.0/1.6.1 一起等用户 OTP publish）。
+
+## v1.7.1（b99）toast 宿主 token + overlay 无障碍语义（2026-11-27）
+
+- **toast token（P1-6）**：`.dpp-toast` 的 `background-color`/`color` 改以 `--dsw-alias-toast-bg` / `--dsw-alias-toast-label` 打头（宿主 `dsh-client-ui-theme/src/styles/design-platform.css:299-301/451-452` 定义，两套 palette 都是深底），旧 menu-surface 链保留为老宿主 fallback。真机 computed 背景 `rgb(53,54,56)` = 宿主 toast 深底 neutral-bluish-800，与原生提示观感一致。toast 本就有 `role="status"`。
+- **ARIA（P1-3）**：overlay 从无效的 `role="menu"`（内含可编辑搜索框，menuitem 语义非法）改为——容器 `role="dialog"` + `aria-label`（面板菜单/命令面板，LABEL 新增 ovMenu/ovPalette）；`.dpp-ov-body` → `role="listbox"` + 稳定 id `dpp-ov-list`；8 处行 `menuitem` → `option` + `aria-selected`；搜索框 → `role="combobox"` + `aria-expanded/haspopup/aria-controls/aria-autocomplete=list`；`setKb/clearKb` 同步 `aria-selected` 与 `aria-activedescendant`（行 id 惰性分配 `dpp-ov-opt-N`）；footer 三行（foot/fam/tidy）移除 role（dialog 里 menuitem 非法，原生 button 语义即正确；**勿用 presentation——会剥掉可交互语义**）；group head 加 `role="presentation"` + `aria-label`（焦点保留但不在 option 流里）；空状态 → `role="status"`。行右键菜单的 `menu/menuitem`（6425/6481 附近）本来就是合法配对，未动。
+- **回归**：新 `test-b99-toast-aria.js` 34 项（token 打头/兜底链、b90 D 段截断守卫、dialog/listbox/combobox/option/status 全链、ArrowDown 驱动 aria-activedescendant 到真实 option、过滤重置）；全量 **249 项全绿**（b99 34 + b96 33 + b95 25+16 + b84 26 + b85 29 + b86 41 + b90 29 + b98 16）。测试正则踩坑：`/color:/` 会先匹配 `background-color:` 的后缀，须用 `(^|;)\s*color:`。
+- **真机**（`cdp-verify-171.js`）：V1 toast token 在活样式表打头且解析出宿主深底色 ✓；V2 launcher 打开菜单 → dialog+「面板菜单」/listbox+id/combobox+controls/51 行 48 option 0 menuitem ✓；V2b ArrowDown → `aria-activedescendant=dpp-ov-opt-1` 解析到 option 行、selected=true、dpp-kb 在 ✓。**脚本注意**：真机打开 overlay 要点 `[data-dpp-launcher]` 或 Ctrl+K——`aria-label=更多` 的是宿主自己的菜单。
+- **发布**：pack.ps1 全绿（1.7.1 三处同步），commit + tag v1.7.1 + GitHub Release。npm 待 OTP。
