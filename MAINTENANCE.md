@@ -329,3 +329,16 @@ Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--re
 - **回归**：新 `test-b99→b101` 命名套件 `test-b101-slash-command.js` 16 项（注册唯一性/name/kind/thunk 文案/run 开面板、无 commandUi 不抛、register 抛错不破坏 apply、宿主形状敌意不抛、en 文案）。全量 **289 项全绿**（b101 16 + b90 29 + b84 26 + b85 29 + b86 41 + b95 16+25 + b96 33 + b98 16 + b99 34 + b100 24）。测试桩坑：boot 桩里 register 回调引用未初始化的 `t`（TDZ）→ 捕获数组须在 boot 外先建。
 - **真机端到端**（`cdp-verify-190-v2.js`，正式无探针包）：V1 `/` 菜单含我们的行 ✓；V2 **真鼠标**点击（滚动后坐标）→ 我们的命令面板打开（55 option）、宿主菜单关闭、run 执行 ✓；V3 Esc 关闭 ✓；V4 `/启动` 把行排进可视区 ✓。
 - **发布**：pack.ps1 全绿（1.9.0 三处同步），commit + tag v1.9.0 + GitHub Release。npm 1.6.0–1.9.0 六版待 OTP。
+
+## v1.9.1（b102）lib/client.js 模块化拆分——纯工程重构（2026-11-27）
+
+- **拆分方式**：宿主对每个插件只求值**一个** client 文件（`exports["./client"]`），且本仓无打包器（零依赖约定），所以采用**有序拼接**：`src/*.js`（21 个模块，文件名数字前缀即依赖顺序）按名排序拼接 → `lib/client.js`。`scripts/build-client.mjs` 负责拼接 + `vm.Script` 语法解析 + 行数/KB/sha256 报告。
+- **零风险证明**：拆分是按分节边界把原文件切成连续字节区间，拼接回的产物与拆分前单文件 **sha256 完全一致**（`82f2b8ff…`，与 `.tmp-dpp-test/backup-client-1.9.0/` 快照比对）；随后才做版本号变更（1.9.1/b102 → `3e162cf3…`）。
+- **模块清单**（21）：00-banner / 01-entry-pinyin（loader 开头 + 拼音表）/ 20-locale / 30-storage-state（pins·mirror·presets·groups·whitelist·feedback，1287 行）/ 40-dom-lookups / 50-fold-visibility / 51-extra-css（938 行）/ 52-debug / 60-launcher（icons+launcher+toast）/ 61-visibility-state / 62-exemption-bridge / 70-row-order / 80-overlay（1026 行）/ 81-ctx-menu / 82-shortcuts / 90-components（ToggleBadgeRows+PinMenuRows）/ 91-settings-page / 92-drag（鼠标+触屏）/ 93-settings-widgets / 94-settings-section（1289 行）/ 99-apply。
+- **pack.ps1 新增第 0 步**：跑 build-client.mjs + staleness guard——src/ 任一文件比 lib/client.js 新则**打包失败**（防「改了 src 忘构建就发版」）。npm `files` 白名单不含 src/，包体不带源模块。
+- **切割点选取**：全部落在分节注释行或 JSDoc 起始行（逐个对上下文人工核验过）。两个修正过的坑：①5199 切在函数中间——overlay 段实际从 5203 的 JSDoc 起；②8032 会把 PanelPinsSettingsSection 的 JSDoc 留给上一个文件——实际从 8026 起；③7991 前的 `document.addEventListener('touchstart',…)` 属触屏拖拽段，拖拽段到 7990 止。
+- **拆分脚本坑**：chunk 用 `lines.slice().join('\n')` 会丢块尾换行——中间块必须补 `'\n'`（末块自带，split 留下的空尾元素）。
+- **构建脚本命名坑**：package.json `"type":"module"` → 仓内脚本必须 `.mjs`/ESM（与 gen-pinyin.mjs 一致），`.js` 写 require 直接 ReferenceError。
+- **回归**：全量 **289 项全绿**（测试直读 lib/client.js，构建产物即被测对象）；真机冒烟（正式包）：`/` 菜单行 ✓、真点击开面板 ✓、Esc ✓、`/启动` 直达 ✓，安装文件含 1.9.1。
+- **回退路径**：tag/分支 `backup/pre-module-split`（= e26abbc）+ 本地快照 `.tmp-dpp-test/backup-client-1.9.0/`；`git checkout backup/pre-module-split -- lib/client.js` 一条命令还原单文件形态。
+- **约定（拆分后）**：改 UI/逻辑一律改 `src/`，pack.ps1 会自动构建；**不要再手改 lib/client.js**（会被下次构建覆盖）。新增模块沿用数字前缀保证排序即顺序。

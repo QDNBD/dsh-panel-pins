@@ -44,6 +44,22 @@ $Tgz        = Join-Path $DistDir ("local-{0}-{1}.tgz" -f $PluginName, $version)
 $TgzNpmName = Join-Path $DistDir ("{0}-{1}.tgz" -f $PluginName, $version)   # npm pack's own output name
 Write-Host "== $PluginName v$version ==" -ForegroundColor Cyan
 
+# ---- 0. build lib/client.js from src/ + staleness guard ----------------------
+# The client is compiled by ordered concatenation of src/*.js (see
+# scripts/build-client.mjs). Fail the pack when a src module is newer than the
+# built file — an edited-but-unbuilt lib/client.js once ships stale behavior.
+$SrcDir = Join-Path $PluginDir 'src'
+if (Test-Path $SrcDir) {
+    & $Node (Join-Path $PSScriptRoot 'build-client.mjs')
+    if ($LASTEXITCODE -ne 0) { throw "build-client.mjs failed (exit=$LASTEXITCODE)" }
+    $LibFile = Join-Path $PluginDir 'lib\client.js'
+    $libTime = (Get-Item $LibFile).LastWriteTimeUtc
+    $stale = Get-ChildItem $SrcDir -Filter '*.js' | Where-Object { $_.LastWriteTimeUtc -gt $libTime }
+    if ($stale) {
+        throw ("src/ modules newer than lib/client.js: " + (($stale | ForEach-Object { $_.Name }) -join ', '))
+    }
+}
+
 # ---- 1. npm pack (via cmd: npm's stderr notices must not become PS errors) --
 if (-not (Test-Path $DistDir)) { New-Item -ItemType Directory -Force -Path $DistDir | Out-Null }
 Push-Location $PluginDir

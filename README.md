@@ -280,6 +280,10 @@ All eleven work on the same sidebar with different aims. **Enable only one at a 
 - **Rename editor misbehaves / loses input** — upgrade to v1.1.1+ (rewritten as an overlay attached to `body`).
 - **Plugin vanished after a host upgrade** — check `engines.dsh` in `package.json`; outside the range the marketplace hides it until a release widens it.
 
+## Development
+
+Client code lives as modules under `src/` (numeric filename prefixes define the concatenation order); `scripts/build-client.mjs` joins them into the single `lib/client.js` the host evaluates. **Edit `src/`, never `lib/client.js` by hand** — pack.ps1 rebuilds automatically and refuses to pack when any src file is newer than the built lib (stale-build guard). The modules are ordered byte-range concatenation (the host evaluates exactly one client file per plugin); the split output was once verified byte-identical to the pre-split monolith.
+
 ## Releases
 
 Actively maintained, usually one version every 1–3 days. Recent:
