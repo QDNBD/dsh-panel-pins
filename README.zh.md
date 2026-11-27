@@ -72,7 +72,7 @@ dsh plugin --profile <你的 profile> add dsh-panel-pins
 
 > 只列事实，不贬低竞品。**同一时间建议只启用一个**——它们改同一批侧栏节点，同时开会互相顶掉。
 
-| 能力 | **本插件 1.6.1** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| 能力 | **本插件 1.7.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K 全局命令面板** | ✅ | — | — | — | — | — | — |
 | **键位注册进宿主快捷键系统（可改键/看冲突）** | ✅ | — | — | — | — | — | — |
@@ -82,6 +82,7 @@ dsh plugin --profile <你的 profile> add dsh-panel-pins
 | **Alt+1..9 直达可见项** | ✅ | — | — | — | — | — | — |
 | **最近使用（MRU，上限 5）** | ✅ | — | — | — | — | — | — |
 | **具名布局预设一键切换** | ✅ | — | — | — | — | — | — |
+| **宿主原生 Pin 共存（插件退为持久化镜像，原生取消固定不再被复活）** | ✅ v1.7 | — | — | — | — | — | — | — |
 | **界面语言跟随宿主语言设置** | ✅ v1.6 | — | — | — | — | — | — | — |
 | **主题实时跟随宿主（无 5 秒滞后）** | ✅ v1.6 | — | — | — | — | — | — | — |
 | 侧栏行收进分组菜单 | ✅ 全局面板／插件入口／设置页／主面板／右栏标签页五类 | ✅ 分组树 | 部分：只收溢出项与左下角三项 | ✅ 分组 flyout | ✅ 只留 3 行 | ✅ 拖进「更多」 | — |
@@ -137,7 +138,7 @@ v1.5 起 `Ctrl+K` 注册进宿主的快捷键服务（`ctx.shortcuts`）：键�
 
 ### 三、侧栏整理
 
-- **钉住 / 取消钉住**——侧栏「更多」菜单里加入口，状态重启保留。
+- **钉住 / 取消钉住**——旧宿主在「更多」菜单里加入口，状态重启保留；宿主 0.2.2-rc.5 自带原生图钉后自动让位：不再重复渲染钉住行，转为**纯持久化镜像**——宿主的重启丢失由插件兜底恢复，你在原生图钉上的每次取消固定都会被记住。
 - **置顶 + 拖拽排序**——按住任意面板/插件行拖到目标位置，**蓝色插入线**实时指示落点，松手即排序；设置页「钉住管理」同样可拖；触屏/键盘兜底：右键「移到最前」。排序走 `row-order` + 负值 CSS `order`，不动 DOM、不怕宿主重渲染。
 - **恢复默认行序**——移过的行多了，设置页一键回到宿主原序。
 - **隐藏**——右键任意行从侧栏移除，设置页或菜单「已隐藏」组恢复，≥2 行时出现「全部恢复」。
@@ -283,6 +284,7 @@ DeepSeek Harness 桌面端也可以：**设置 → 插件**，从插件市场搜
 
 活跃维护，通常每 1–3 天一个版本。近期：
 
+- **1.7.0** — **Pin 双源收敛**：宿主 0.2.2-rc.5 自带原生图钉后，钉住状态一度存在两份（宿主内存 + 插件本地存储），在原生图钉上取消固定会被插件无声复活（真机实证：重开一次菜单行就回来）。现在插件检测到原生图钉就隐藏自己的钉住行，退为纯持久化镜像——**宿主管交互，插件管记忆**：每次原生取消固定都被记录，重启后由插件恢复，绝不再复活。旧宿主（无原生图钉）行为不变。
 - **1.6.1** — 修复：侧栏「**新会话**」按钮看着空了一半——根源是插件自己的样式表命中面太宽：`[class*="_newSession"]` 把按钮内部的标签、内容 span 一起匹配上，多出来的下边距把「+ 新会话」文字顶到按钮垂直中心上方 8px。现在这条间距只作用在行上，文字回到正中
 - **1.6.0** — 再加三件：宿主自己的**右栏标签页类型**进入菜单、单成一组（只收「页类型」——资源类型是按地址打开的、按名字打开会开出坏标签页）；**界面语言改跟宿主语言设置**（8 种语言、应用内可切），不再靠 `navigator.language` 猜；**主题实时跟随宿主**——原来的观察器盯的是宿主根本不碰的 `<html>` class，切主题最长要等五秒
 - **1.5.0** — 三件事：`Ctrl+K` 注册进宿主快捷键服务（`设置 → 快捷键` 可改键、冲突可见、宿主自己仲裁输入框/模态）；搜索支持拼音首字母 / 全拼 / 模糊匹配并按相关度排序；只注册了**主面板**的第三方插件进入启动器「主面板」分组

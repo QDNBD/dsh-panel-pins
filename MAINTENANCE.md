@@ -134,6 +134,12 @@ Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--re
 # → http://127.0.0.1:9222/json/list 拿 webSocketDebuggerUrl，Runtime.evaluate 即可
 ```
 
+**⚠️ 两个 2026-11-26 实测的启动坑（此前「CDP 端口起不来」的真正根因）**：
+
+1. **`ELECTRON_RUN_AS_NODE=1`**：agent/工具会话的环境变量里常带着这个值（WorkBuddy 等工具链注入）。宿主 exe 继承后以**纯 Node 模式**启动：拒绝 `--remote-debugging-port` 报 `bad option`、`--version` 回答 Node 版本、无参数启动读 stdin 到 EOF 即退（窗口都不出现）。**启动宿主前必须先清掉该变量**（PowerShell：`Remove-Item Env:ELECTRON_RUN_AS_NODE`）。
+2. **agent 前台命令结束会连带杀掉它启动的宿主**：`Start-Process` 出的进程属于本次命令的作业对象，命令一返回就被回收（表现为「启动成功、几秒后进程全没」）。从 agent 会话做真机验证要**后台保活**：`run_in_background` 里启动 + 死循环监控；后续 CDP 走 TCP 独立连接，不依赖启动它的 shell。
+3. 两次连续重启要间隔够长（12s+），否则新实例可能绑不上端口（DevToolsActivePort 文件写了新 GUID 但连接被拒）——干净杀进程 → 等 → 再启动。
+
 - 宿主自己的设置入口：侧栏底部「**账号菜单**」→「设置 Ctrl+,」→ 左侧导航；**外观**（浅色/深色/跟随系统）在「通用设置」里，控件是 `button.Iwzhua_themeCube`；**语言**在「通用设置」的 `button.CDP_Dq_selector`。
 - `Emulation.setEmulatedMedia` 能改 `prefers-color-scheme`（`matchMedia` 会变、MQL change 事件会触发），但**宿主不会因此换肤**——它的主题偏好是显式值不是 system，媒体查询监听器会主动 return。**要换肤必须走宿主的设置 UI**。
 - 往**装在盘上那份** `lib/client.js` 注入探针（不动源码仓）再重启，能直接读到插件内部状态；改完用 `scripts/pack.ps1` 重装即还原。
@@ -264,3 +270,34 @@ Start-Process 'C:\...\DeepSeek Harness\DeepSeek Harness.exe' -ArgumentList '--re
 - **panelInfo 形状**：`{ getSnapshot: () => store.getSnapshot().panelInfo, subscribe: listener => store.subscribe(listener) }`；快照形如 `{ activePanelId: string|null }`。`activePanelId()` 与订阅驱动刷新（切面板不产生 sidebar DOM mutation，observer 看不见）都建立在这上面。
 - **selectPanel 语义**：`layout.selectPanel(panelId)` 对未注册的 main key **抛错**（`main panel "..." is not registered`）——桥接/跳转调用必须 try/catch；store 层 `retainMainPanels` 会在面板清单变化时自动清掉失效的 activePanelId（置 null，回对话），是宿主级的失效兜底。
 - **profile 安装形态警报**：1.2.2 起 npm 单名发布，desktop profile 的依赖形态从 `file:tgz` 漂成 registry `^x.y.z`——pack.ps1 的 5a/5b/5c 只匹配 local- tgz 形态，全部静默空转，**桌面端启动重铺会把本地安装回滚到 npm 已发布版**。pack.ps1 已加 5a2（检测 `^` 形态 → 自动转 file:tgz + pnpm lock 重建，pnpm.cjs 从运行时 `dependencies\pnpm\bin\pnpm.cjs` 相对定位）。
+
+## v1.7.0（b98）Pin 双源收敛——宿主管交互，插件管记忆（2026-11-27）
+
+### 背景（真机实锤的缺陷，2026-11-26 CDP 取证）
+
+- 宿主 0.2.2-rc.5 自带原生图钉：侧栏面板行行尾 `css.panelUnpin`（hash 成 `wtg9ga_panelUnpin`，`SidebarRoot.tsx:101-110`，`wide && canUnpin` 时渲染）+「更多」菜单里 entry-customization 的未钉条目固定按钮。宿主 pin store **纯内存**（`panel-pins.ts` 的 snapshot store，重启重置）——`createPanelPins` 源码逐字核实。
+- 插件的持久化 `unpinned`（localStorage）+ 旧 `syncIntoHost` 在**每次 slot 挂载**都把存储意图强推回宿主 → 用户在原生图钉上取消固定被无声复活。真机时序铁证：T2 点原生取消行消失（DOM 移除）→ T5 重开菜单行复活（`syncIntoHost` 推回），localStorage 全程 `[]`。
+- 同一菜单双份控件：宿主原生行尾图标 + 插件 `.dpp-row` 整行，7 个面板全双份。
+
+### 方案 a 实现（`lib/client.js`，「native pin mirror」节）
+
+- **检测**：`probeNativePinControls()` → `document.querySelector('button[class$="_panelUnpin"]')`（`$=` 尾段匹配，hash 前缀无关；`panelUnpin` 类名仅 sidebar 包使用）。探测在 PinMenuRows effect 每次挂载时跑 + 300ms 延迟补探；`nativePinSeen` 会话级闩锁（新 renderer 重置，宿主升级移除控件自动回退旧行为）。
+- **三种同步模式**（PinMenuRows effect 分流）：
+  - 无原生控件（旧宿主）：旧 `syncIntoHost` 每次挂载推送，行为与 1.6.1 逐字相同；
+  - 原生控件 + 首次挂载（`!mirrorArmed`）：`mirrorAdoptAndRestore`——先**收养**（宿主已 unpinned 而存储不知道的 id，覆盖「用户先原生取消、后开菜单」的窗口），再**恢复**（宿主内存重置导致的丢失，推回存储意图），然后武装；
+  - 已武装：`mirrorFromHost`——**宿主赢**，entries 的 pinned flags 原样记入 localStorage，永不推送。原生取消固定从此被记住、不复活。
+- **解除武装**：`applyLayoutSnapshot`（布局预设）与 `applyImportedDumpShared`（导入配置）整份覆写 unpinned 存储 → `mirrorArmed = false`，下次挂载走恢复把新意图推给宿主。
+- **UI**：`nativePin` state 门控渲染——原生控件在场时不渲染逐条钉住行（fold/tidy/family 行保留，与 pin 无关）。peek（临时钉住打开未钉面板）不变：peek 只对存储中已 unpinned 的面板操作，mirror 记录前后幂等。
+- 用户显式操作（设置页钉住管理/右键钉住/导出导入）照旧写存储 + 推送，armed mirror 记录宿主状态后自然一致。
+
+### 回归
+
+- 新套件 `D:/code/.tmp-dpp-test/test-b98-pin-mirror.js`（16 项，mini-React stub：真 useState 槽位 + useEffect deps 语义）：legacy 行渲染与推送、首挂载恢复、armed 镜像记录原生取消/原生重钉、**无复活断言**（calls 里不得出现 (id,true) 回推）、adopt-before-restore、行隐藏+fold 保留、plugins id 永不镜像。
+- 全量：b98 16/16 + b96 33/33 + b95 25/25 + 16/16 + b84 26/26 + b85 29/29 + b86 41/41 + b90 29/29 = **215 项全绿**（b86-final.js 文件自身编码损坏不参与，与改动无关）。
+- **真机端到端**（CDP，`cdp-pin-verify-a/b.js`）：V1 加载 ✓；V2 菜单中逐条钉住行 0、原生按钮在场 ✓；V3 原生取消插件市场 → localStorage 立刻记录 `dsh-market` → 重开菜单行不复活、原生按钮不回来（+2.5s 稳定）✓；V4 应用重启 → store 两 id 保留 → 首挂载恢复：插件市场/定时任务都从侧栏消失并正确出现在菜单未钉区（label-id-map 证实 `dsh-automation`=定时任务）✓。
+- 既有视觉遗留（与本次无关，未处理）：schedules（自动化任务）行在菜单打开瞬间采到 display:none——实为**收起菜单里的未钉条目**（panelRow 类在菜单条目上同样存在）+ Tooltip portal 按钮残留坐标，关闭菜单后侧栏行全部 flex 正常。
+
+### 发布状态
+
+- pack.ps1 全绿：`local-dsh-panel-pins-1.7.0.tgz` → desktop profile 三处同步，SRC==INST。BUILD=b98，VERSION=1.7.0。
+- npm/GitHub 未发布（同 1.6.0/1.6.1 一起等用户 OTP publish）。
