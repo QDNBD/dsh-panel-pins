@@ -38,7 +38,7 @@ By the tenth plugin the sidebar is out of control: what you use daily is buried 
 
 - **⌨️ Any panel in two keystrokes** — a global `Ctrl+K` palette with instant search and hit highlighting, `Alt+1..9` direct jumps, and a Recent group that keeps your high-frequency panels on top. The sidebar becomes optional. The binding lives in the **host's own shortcut service**, so you can rebind it in *Settings → Shortcuts*.
 - **🔤 Search it in pinyin** — type `mbsn` to find 面板收纳, `mianban` to find 面板. The full GB2312 common-hanzi table ships in the plugin: **purely local, nothing leaves the machine**. Hits are ranked, so the best match lands on the first row.
-- **🖱️ Drag anything, anywhere** — grab any panel or plugin row and drop it where it belongs; a **blue insertion line** marks the exact landing spot. Works right in the sidebar *and* in the pinned manager, with a right-click *Move to front* fallback for touch/keyboard users. One click restores the host's default order.
+- **🖱️ Drag anything, anywhere** — grab any panel or plugin row and drop it where it belongs; a **blue insertion line** marks the exact landing spot. Works right in the sidebar *and* in the pinned manager, and touch users can drag too (long-press 500ms, v1.8) — a hold-and-release without moving opens the right-click menu. One click restores the host's default order.
 - **✏️ Make every row yours** — right-click to hide a row, rename it with a floating editor anchored under the row, pin it, or push it to the top. Display-only, survives restarts and language switches.
 - **💾 Named layout presets** — pins, folds, icon-only and the compact footer snapshot into one preset; flip "work" ↔ "play" in one click from the palette.
 - **🧲 Nothing is unreachable** — third-party plugins that only registered a Settings page get their full page as a row in the menu; plugins that only registered a **main panel** land in the *Main panels* group; the host's own **right-sidebar tab types** get a group of their own.
@@ -72,7 +72,7 @@ Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panell
 
 > Facts only, no scorekeeping. **Enable one at a time** — they mutate the same sidebar nodes.
 
-| Capability | **This plugin 1.7.1** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
+| Capability | **This plugin 1.8.0** | [panel-control 0.10.7](https://www.npmjs.com/package/dsh-panel-control) | [panel-layout 0.2.5](https://www.npmjs.com/package/dsh-panel-layout) | [panellist 0.2.0](https://www.npmjs.com/package/dsh-panellist) | [panel-compact 0.1.0](https://www.npmjs.com/package/dsh-panel-compact) | [panel-tidy 0.2.1](https://www.npmjs.com/package/dsh-panel-tidy) | [panel-titlebar 0.3.4](https://www.npmjs.com/package/dsh-panel-titlebar) |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Ctrl+K global command palette** | ✅ | — | — | — | — | — | — |
 | **Registered in the host's shortcut service (rebindable, conflicts visible)** | ✅ | — | — | — | — | — | — |
@@ -100,7 +100,7 @@ Among the eleven sidebar-panel plugins (`panel-control`, `panel-layout`, `panell
 | Absorb bottom-left *More* (settings / feedback / sign-in) | — | — | ✅ | — | — | — | — |
 | Panel rows moved into the Windows title bar | — | — | — | — | — | — | ✅ |
 | AI auto-classification | — | ✅（sends entry names to the model provider） | — | — | — | — | — |
-| Touch drag / long-press to pick up a row | touch uses *Move to front* | — | touch uses an up-arrow | — | ✅ | ✅ 500ms hold | — |
+| Touch drag / long-press to pick up a row | ✅ long-press 500ms, drag directly | — | touch uses an up-arrow | — | ✅ | ✅ 500ms hold | — |
 | Host range | **≥ 0.2.0-rc.1 / Node ≥ 20** | ≥ 0.2.1-rc.3 | ^0.2.1-rc.3 / Node ≥ 22 | ≥ 0.2.0-rc.2 / Node ≥ 22 | ≥ 0.2.0 | ≥ 0.2.0 / Node ^22.19 | ≥ 0.2.1-0 |
 
 > The remaining four are single-purpose: `panel-order` (sorting only), `panel-folders` (collapsible groups), `panel-collapse` (collapse the panel list), `panel-fold` (fold into *More*).
@@ -139,7 +139,7 @@ Since v1.5 `Ctrl+K` is registered with the host's shortcut service (`ctx.shortcu
 ### 3. Sidebar management
 
 - **Pin / unpin** — added to the sidebar's *More* menu on legacy hosts, persisted across restarts; once the host ships its own native pin (0.2.2-rc.5), the plugin steps aside — it stops rendering duplicate pin rows and becomes a **pure persistence mirror**: restarts that wipe the host's memory store are restored by the plugin, and every native unpin is remembered.
-- **Top-pin + drag to reorder** — grab any panel or plugin row, drag it to its target; a **blue insertion line** shows the drop point. Same in Settings → pinned manager. Touch/keyboard fallback: right-click → *Move to front*. Backed by `row-order` plus negative CSS `order`, so no DOM surgery and no fights with host re-renders.
+- **Top-pin + drag to reorder** — grab any panel or plugin row, drag it to its target; a **blue insertion line** shows the drop point. Same in Settings → pinned manager. Touch fallback: long-press 500ms and drag directly (v1.8); hold-and-release without moving opens the right-click menu. Backed by `row-order` plus negative CSS `order`, so no DOM surgery and no fights with host re-renders.
 - **Reset row order** — when you have moved enough rows, one click returns to the host's default order.
 - **Hide** — right-click any row to remove it; restore from Settings or the *Hidden* group (with restore-all once you have ≥2).
 - **Rename** — display-only override via a **floating editor** anchored under the row, tracking scroll and folding live, surviving the sidebar's constant re-renders with zero lost input (`Enter` commit / `Esc` cancel). Id-first storage survives UI language switches.
@@ -283,6 +283,7 @@ All eleven work on the same sidebar with different aims. **Enable only one at a 
 
 Actively maintained, usually one version every 1–3 days. Recent:
 
+- **1.8.0** — two new capabilities: **touch drag at last** — press a sidebar row for 500ms to arm the drag (haptic tick), a blue insertion line marks the drop point live, release to commit; releasing a hold without moving opens the row context menu (hide/rename/pin all reachable), and an early swipe still hands off to scrolling. The mouse drag path is unchanged. **Collapsed-sidebar badge** — while the sidebar is collapsed, the expand button shows "N rows folded into the launcher"; nothing folded means no badge, and hosts without the slot skip it silently.
 - **1.7.1** — two polish items: the transient toast now consumes the host's own toast tokens (`--dsw-alias-toast-bg/-label`), so it looks exactly like the host's native toasts (dark surface, both palettes); the overlay menu gained proper accessibility semantics — the container moves from an invalid `role="menu"` to `dialog`, the list is a `listbox` with a stable id, rows are `option`s, the search input is a `combobox`, and the ↑↓ keyboard highlight is exposed to screen readers via `aria-activedescendant` (previously a screen reader had no idea which row was highlighted). No behaviour or visual change beyond the toast surface.
 - **1.7.0** — **Pin dual-source convergence**: once the host shipped its own native pin (0.2.2-rc.5), pin state lived in two places (host memory + plugin storage) and a native unpin was silently resurrected by the plugin (verified on the real app: reopening the menu brought the row back). The plugin now detects the native controls, hides its own pin rows, and becomes a pure persistence mirror — **the host owns the interaction, the plugin owns the memory**: every native unpin is recorded and restored after a restart, never resurrected. Legacy hosts without native pins behave exactly as before.
 - **1.6.1** — fix: the sidebar's **New-session button** looked half-empty, because the plugin's own stylesheet matched more than it should — `[class*="_newSession"]` also caught the button's inner label and content spans, so the extra margin pushed the "+ 新会话" text 8px above the button's vertical middle. The gap now applies to the row only, and the text is centred again
